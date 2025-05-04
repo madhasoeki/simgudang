@@ -337,7 +337,7 @@ return [
                 [
                     'text' => 'Barang Masuk',
                     'icon' => 'fa-solid fa-dolly',
-                    'url' => '/barang-masuk',
+                    'url' => '/transaksi-masuk',
                 ],
                 [
                     'text' => 'Barang Keluar',
@@ -373,21 +373,6 @@ return [
             'url' => 'kelola-user',
             'icon' => 'fas fa-users',
         ]
-        // [
-        //     'text' => 'important',
-        //     'icon_color' => 'red',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'warning',
-        //     'icon_color' => 'yellow',
-        //     'url' => '#',
-        // ],
-        // [
-        //     'text' => 'information',
-        //     'icon_color' => 'cyan',
-        //     'url' => '#',
-        // ],
     ],
 
     /*

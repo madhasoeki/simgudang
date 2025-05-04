@@ -1,0 +1,324 @@
+
+<x-layout>
+    <x-slot:title>Catat Barang Masuk</x-slot:title>
+
+    <x-slot:style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
+        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
+
+    </x-slot:style>
+
+    <section class="content">
+        <div class="container-fluid">
+          <div class="row">
+            <div class="col-12">
+  
+                <div class="card">
+                    <div class="card-header row">
+                        <div class="dropdown mr-2 col">
+                            <button class="btn btn-default" id="dateFilterDropdown">
+                                <i class="far fa-calendar-alt mr-2"></i>
+                                <span>Pilih Rentang Tanggal</span>
+                            </button>
+                        </div>
+                        <a href="{{ route('transaksi-masuk.create') }}" class="btn btn-block btn-primary col-sm-2">
+                            <i class="fas fa-plus"></i>
+                            Tambah Barang
+                        </a>
+                      </div>
+                    <!-- /.card-header -->
+                    <div class="card-body">
+                      <table id="tabel" class="table table-bordered table-striped">
+                        <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Kode</th>
+                            <th>Tanggal</th>
+                            <th>Nama Barang</th>
+                            <th>QTY</th>
+                            <th>Satuan</th>
+                            <th>Harga</th>
+                            <th>Jumlah</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                        {{-- <tbody>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>SMP</td>
+                                <td>27/12/2024</td>
+                                <td>SEMEN MERAH PUTIH</td>
+                                <td>30</td>
+                                <td>SAK</td>
+                                <td>Rp81.000</td>
+                                <td>Rp2.430.000</td>
+                            </tr>
+                        </tbody> --}}
+                      </table>
+                    </div>
+                    <!-- /.card-body -->
+                  </div>
+              <!-- /.card -->
+            </div>
+            <!-- /.col -->
+          </div>
+          <!-- /.row -->
+        </div>
+        <!-- /.container-fluid -->
+      </section>
+
+      <x-slot:script>
+        <!-- Load jQuery terlebih dahulu -->
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+        <!-- Load library lainnya setelah jQuery -->
+        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+        <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.html5.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+        <script>
+            // Deklarasikan variabel table di level global
+            let table;
+            let startDate = moment().subtract(6, 'days');
+            let endDate = moment();
+
+            $(document).ready(function () {
+                // Inisialisasi DataTable
+                table = $("#tabel").DataTable({
+                    "dom": '<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>rtip',
+                    "responsive": true,
+                    "lengthChange": false,
+                    "autoWidth": false,
+                    "ordering": false,
+                    "processing": true,
+                    "serverSide": true,
+                    "ajax": {
+                        "url": "/transaksi-masuk/data",
+                        "data": function (d) {
+                            d.start_date = startDate.format('YYYY-MM-DD');
+                            d.end_date = endDate.format('YYYY-MM-DD');
+                            return d;
+                        }
+                    },
+                    "columns": [
+                        { "data": "DT_RowIndex" },
+                        { "data": "kode" },
+                        { 
+                            "data": "tanggal",
+                            "render": function(data) {
+                                return moment(data).format('DD/MM/YYYY');
+                            }
+                        },
+                        { "data": "nama_barang" },
+                        { "data": "qty" },
+                        { "data": "satuan" },
+                        { 
+                            "data": "harga",
+                            "render": function(data) {
+                                return 'Rp' + parseFloat(data).toLocaleString('id-ID');
+                            }
+                        },
+                        { 
+                            "data": "jumlah",
+                            "render": function(data) {
+                                return 'Rp' + parseFloat(data).toLocaleString('id-ID');
+                            }
+                        }
+                    ],
+                    "buttons": [
+                        {
+                            extend: 'excel',
+                            text: '<i class="fa-solid fa-download"></i> Export',
+                            className: 'btn btn-success btn-sm',
+                            title: "REKAPAN TOTAL",
+                            messageTop: function() {
+                                return 'Periode: ' + startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY');
+                            },
+                            customize: function (xlsx) {
+                                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                const total = table.column(7).data().reduce((sum, val) => {
+                                    return sum + parseFloat(val.replace('Rp', '').replace(/\./g, ''));
+                                }, 0);
+                                
+                                // Tambahkan logika tambahan untuk Excel di sini
+                            }
+                        }
+                    ],
+                    "footerCallback": function (row, data, start, end, display) {
+                        const api = this.api();
+                        const total = api.column(7).data().reduce((sum, val) => {
+                            return sum + parseFloat(val.replace('Rp', '').replace(/\./g, ''));
+                        }, 0);
+                        
+                        $(api.column(7).footer()).html('Rp' + total.toLocaleString('id-ID'));
+                    }
+                });
+
+                // Inisialisasi Date Range Picker
+                const locale = {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Terapkan',
+                    cancelLabel: 'Batal',
+                    daysOfWeek: ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'],
+                    monthNames: [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ]
+                };
+
+                $('#dateFilterDropdown').daterangepicker({
+                    startDate: startDate,
+                    endDate: endDate,
+                    autoUpdateInput: true,
+                    locale: locale,
+                    ranges: {
+                        'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                        '14 Hari Terakhir': [moment().subtract(13, 'days'), moment()],
+                        '28 Hari Terakhir': [moment().subtract(27, 'days'), moment()],
+                        '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
+                        'Minggu Ini': [moment().startOf('week'), moment().endOf('week')],
+                        'Minggu Lalu': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
+                        'Bulan Ini': [moment().startOf('month'), moment().endOf('month')]
+                    }
+                }, function(start, end) {
+                    startDate = start;
+                    endDate = end;
+                    $('#dateFilterDropdown span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                    table.ajax.reload(() => {
+                        $('#dateFilterDropdown').data('daterangepicker').hide();
+                    });
+                });
+
+                // Handle cancel date picker
+                $('#dateFilterDropdown').on('cancel.daterangepicker', function(ev, picker) {
+                    startDate = moment().subtract(6, 'days');
+                    endDate = moment();
+                    $(this).find('span').html('Pilih Rentang Tanggal');
+                    table.ajax.reload();
+                    picker.hide();
+                });
+            });
+        </script>
+    </x-slot:script>
+
+</x-layout>

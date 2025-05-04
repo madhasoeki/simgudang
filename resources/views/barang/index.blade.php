@@ -1,6 +1,6 @@
 <x-layout>
 
-    <x-slot:title>{{ $title }}</x-slot:title>
+    <x-slot:title>Kelola Barang</x-slot:title>
 
     <section class="content">
         <div class="container-fluid">
@@ -20,16 +20,19 @@
                         </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>SMP</td>
-                                <td>SEMEN MERAH PUTIH</td>
-                                <td>30</td>
-                                <td>
-                                    <button class="btn btx-xs btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                    <button class="btn btx-xs btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
-                                </td>
-                            </tr>
+                            @foreach($barangs as $index => $barang)
+                                
+                                <tr>
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $barang->kode }}</td>
+                                    <td>{{ $barang->nama }}</td>
+                                    <td>{{ $barang->stok->jumlah ?? 0 }}</td> {{-- Jika punya relasi stok --}}
+                                    <td>
+                                        <button class="btn btx-xs btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
+                                        <button class="btn btx-xs btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
+                                    </td>
+                                </tr>
+                            @endforeach
                         </tbody>
                       </table>
                     </div>
@@ -68,7 +71,7 @@
                     text: '<i class="fas fa-plus"></i> Tambah Data',
                     action: function (e, dt, node, config) {
                       // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
-                      window.location.href = "/barang/create";
+                      window.location.href = "{{ route('barang.create') }}";
                     }
                   },
                 ]
