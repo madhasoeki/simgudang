@@ -176,7 +176,40 @@
                     "columnDefs": [
                     { "width": "20px", "targets": 0 }
                     ],
-                    "buttons": ["excel", "pdf"],
+                    "buttons": [
+                        {
+                            "extend": 'excel',
+                            "text": '<i class="fa-solid fa-download"></i> Export',
+                            "className": 'btn btn-success btn-sm',
+                            "title": "REKAPAN TOTAL",
+                            "messageTop": "Periode Desember 2022",
+                            "customize": function (xlsx) {
+                                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                
+                                // Tambahkan border ke semua sel
+                                $('row c', sheet).attr('s', '2'); // Style index 2 untuk border
+                                
+                                // Tambahkan total
+                                const total = $('#totalJumlah').text();
+                                const lastRow = $('row:last', sheet).attr('r');
+                                const newRow = parseInt(lastRow) + 1;
+                                
+                                $('row:last', sheet).after(`
+                                    <row r="${newRow}">
+                                        <c t="inlineStr" r="A${newRow}" s="3">
+                                            <is><t>Total</t></is>
+                                        </c>
+                                        <c r="D${newRow}" t="n" s="4">
+                                            <v>${total.replace(/[^\d]/g, '')}</v>
+                                        </c>
+                                    </row>
+                                `);
+
+                                // Tambahkan style number format
+                                $('xf:applyNumberFormats', sheet).attr('count', '2');
+                            }
+                        }
+                    ],
                 }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             });
         </script>

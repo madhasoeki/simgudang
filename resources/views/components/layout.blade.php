@@ -2,6 +2,10 @@
 
 @section('title', $title . ' | SIMGUDANG')
 
+@section('meta_tags')
+    <link rel="icon" type="image/png" href="{{ asset('img/logo.png') }}" />
+@endsection
+
 @section('content_header')
     <h1>{{ $title }}</h1>
 @stop

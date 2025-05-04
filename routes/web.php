@@ -31,6 +31,10 @@ Route::get('/laporan-project', function () {
     return view('laporan-project', ['title' => 'Laporan Per Project']);
 });
 
+Route::get('/rekap-barang', function () {
+    return view('rekap-barang-keluar', ['title' => 'Rekap Barang Keluar']);
+});
+
 Auth::routes();
 
 // Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

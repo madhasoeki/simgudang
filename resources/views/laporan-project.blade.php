@@ -211,10 +211,9 @@
 
   <x-slot:script>
 
+    {{-- datepicker library --}}
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>
 
     <script>
       $(function () {
@@ -223,152 +222,75 @@
         };
 
         const table = $("#tabel").DataTable({
-          responsive: true,
-          lengthChange: false,
-          autoWidth: false,
-          ordering: false,
-          columnDefs: [
-            { width: "20px", targets: 0 },
-            { targets: 9, visible: false }, // Sembunyikan kolom Project
+          "responsive": true,
+          "lengthChange": false,
+          "autoWidth": false,
+          "ordering": false,
+          "columnDefs": [
+            { "width": "20px", "targets": 0 },
+            { "targets": 9, "visible": false }, // Sembunyikan kolom Project
             { 
-              targets: [6, 8], // Kolom Harga dan Jumlah
+              "targets": [6, 8], // Kolom Harga dan Jumlah
               render: (data) => formatRupiah(data),
-              className: 'text-right'
+              "className": 'text-right'
             }
           ],
-          dom: '<"row mb-2"<"col-md-6"B><"col-md-6 d-flex justify-content-end"f>>rtip',
-          buttons: [
-    {
-      extend: 'excel',
-      text: 'Excel',
-      title: function() {
-        const project = $('#projectFilter').val() || 'Semua Project';
-        return `Laporan Project ${project}`;
-      },
-      messageTop: function() {
-        return 'Periode November - Desember 2025';
-      },
-      customize: function (xlsx) {
-        const sheet = xlsx.xl.worksheets['sheet1.xml'];
-        
-        // Perbaikan struktur XML untuk menghindari warning
-        const lastRow = $('row:last', sheet).attr('r');
-        const newRow = parseInt(lastRow) + 1;
-        
-        // Format sel total dengan benar
-        $('row:last', sheet).after(`
-          <row r="${newRow}">
-            <c t="inlineStr" r="A${newRow}">
-              <is><t>Total</t></is>
-            </c>
-            <c r="I${newRow}" t="n">
-              <v>${$('#totalJumlah').text().replace(/[^\d]/g, '')}</v>
-            </c>
-          </row>
-        `);
+          "dom": '<"row mb-2"<"col-md-6"B><"col-md-6 d-flex justify-content-end"f>>rtip',
+          "buttons": [
+            {
+              "extend": 'excel',
+              "text": '<i class="fa-solid fa-download"></i> Export',
+              "className": 'btn btn-success btn-sm',
+              title: function() {
+                const project = $('#projectFilter').val() || 'Semua Project';
+                return `Laporan Project ${project}`;
+              },
+              messageTop: function() {
+                return 'Periode November - Desember 2025';
+              },
+              customize: function (xlsx) {
+                const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                
+                // Perbaikan struktur XML untuk menghindari warning
+                const lastRow = $('row:last', sheet).attr('r');
+                const newRow = parseInt(lastRow) + 1;
+                
+                // Format sel total dengan benar
+                $('row:last', sheet).after(`
+                  <row r="${newRow}">
+                    <c t="inlineStr" r="A${newRow}">
+                      <is><t>Total</t></is>
+                    </c>
+                    <c r="I${newRow}" t="n">
+                      <v>${$('#totalJumlah').text().replace(/[^\d]/g, '')}</v>
+                    </c>
+                  </row>
+                `);
 
-        // Tambahkan style number format
-        $('xf:applyNumberFormats', sheet).attr('count', '2');
-      },
-      exportOptions: {
-        columns: [0,1,2,3,4,5,6,7,8], // Sembunyikan kolom Project (index 9)
-        format: {
-          body: function(data, row, column, node) {
-            // Pertahankan format Rp untuk kolom Harga dan Jumlah
-            return (column === 6 || column === 8) ? $(node).text() : data;
-          }
-        }
-      }
-    },
-    {
-            extend: 'pdf',
-            text: 'PDF',
-            orientation: 'landscape',
-            pageSize: 'A4',
-            title: function() {
-              const project = $('#projectFilter').val() || 'Semua Project';
-              return `Laporan Project ${project}`;
-            },
-            messageTop: 'Periode November - Desember 2025',
-            customize: function (doc) {
-        // Struktur lengkap dengan judul
-        doc.content = [
-          { 
-            text: `Laporan Project ${$('#projectFilter').val() || 'Semua Project'}`, 
-            fontSize: 16, 
-            alignment: 'center', 
-            margin: [0, 0, 0, 10] 
-          },
-          { 
-            text: 'Periode November - Desember 2025', 
-            fontSize: 12, 
-            alignment: 'center', 
-            margin: [0, 0, 0, 15] 
-          },
-          {
-            table: {
-              headerRows: 1,
-              widths: [20, 30, 50, '*', 25, 40, 60, 60, 60], // Sesuaikan lebar kolom
-              body: [
-                // Header
-                ['No','Kode','Tanggal','Nama Barang','QTY','Satuan','Harga','Keterangan','Jumlah'],
-                // Data
-                ...table.rows({search: 'applied'}).data().toArray().map(row => [
-                  row[0], // No
-                  row[1], // Kode
-                  row[2], // Tanggal
-                  row[3], // Nama Barang
-                  row[4], // QTY
-                  row[5], // Satuan
-                  row[6], // Harga (Rp)
-                  row[7], // Keterangan
-                  row[8]  // Jumlah (Rp)
-                ])
-              ]
-            }
-          },
-          {
-            text: `Total: ${$('#totalJumlah').text()}`,
-            margin: [0, 15, 0, 0],
-            alignment: 'right',
-            bold: true,
-            fontSize: 12
-          }
-        ];
-
-        // Styling khusus
-        doc.styles.tableHeader = {
-          fillColor: '#2c3e50',
-          color: 'white',
-          bold: true,
-          fontSize: 10
-        };
-        
-        doc.defaultStyle = {
-          fontSize: 9,
-          lineHeight: 1.2
-        };
-      },
-            exportOptions: {
-              columns: [0,1,2,3,4,5,6,7,8],
-              format: {
-                body: function (data, row, column, node) {
-                  return (column === 6 || column === 8) ? $(node).text() : data;
+                // Tambahkan style number format
+                $('xf:applyNumberFormats', sheet).attr('count', '2');
+              },
+              "exportOptions": {
+                "columns": [0,1,2,3,4,5,6,7,8], // Sembunyikan kolom Project (index 9)
+                "format": {
+                  body: function(data, row, column, node) {
+                    // Pertahankan format Rp untuk kolom Harga dan Jumlah
+                    return (column === 6 || column === 8) ? $(node).text() : data;
+                  }
                 }
               }
             }
-          }
         ],
-          language: {
-            info: "",
-            infoEmpty: "",
-            infoFiltered: "",
-            lengthMenu: "Menampilkan _MENU_ data per halaman",
+          "language": {
+            "info": "",
+            "infoEmpty": "",
+            "infoFiltered": "",
+            "lengthMenu": "Menampilkan _MENU_ data per halaman",
           },
           footerCallback: function (row, data, start, end, display) {
             const api = this.api();
             const total = api
-              .column(8, { filter: 'applied', order: 'current' })
+              .column(8, { "filter": 'applied', "order": 'current' })
               .data()
               .reduce((a, b) => a + parseInt(b), 0);
 
