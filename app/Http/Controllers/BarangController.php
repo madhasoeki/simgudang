@@ -11,14 +11,15 @@ class BarangController extends Controller
     {
         $barangs = Barang::with('stok')->get();
         $barangs = Barang::orderBy('kode', 'asc')->get(); // mengurutkan berdasarkan kode
-        return view('barang.index', compact('barangs'));
+        $title = 'Daftar Barang'; // Judul halaman
+        return view('barang.index', compact('barangs', 'title'));
     }
 
     public function create()
     {
-        return view('barang.create', [
-            'title' => 'Tambah Barang Baru'
-        ]);
+        $title = 'Tambah Barang Baru'; // Judul halaman
+
+        return view('barang.create', compact('title'));
     }
 
     public function store(Request $request)
@@ -38,5 +39,39 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')
                         ->with('success', 'Barang '.$barang->nama.' berhasil ditambahkan!');
+    }
+
+    // Menampilkan form edit barang
+    public function edit($kode)
+    {
+        // Ambil data barang berdasarkan kode
+        $barang = Barang::findOrFail($kode);
+
+        $title = 'Edit Data Barang'; // Judul halaman
+
+        // Kirim data barang ke view edit
+        return view('barang.edit', compact('barang', 'title'));
+    }
+
+    // Menyimpan perubahan barang
+    public function update(Request $request, $kode)
+    {
+        // Validasi input
+        $request->validate([
+            'nama' => 'required|string|max:100',
+            'satuan' => 'required|string|max:20',
+        ]);
+
+        // Ambil data barang yang akan diupdate
+        $barang = Barang::findOrFail($kode);
+
+        // Update data barang
+        $barang->update([
+            'nama' => $request->nama,
+            'satuan' => $request->satuan,
+        ]);
+
+        // Redirect setelah berhasil update
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 }

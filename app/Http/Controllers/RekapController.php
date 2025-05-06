@@ -9,24 +9,6 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RekapController extends Controller
 {
-    public function createProjek()
-    {
-        return view('projek.create');
-    }
-
-    public function storeProjek(Request $request)
-    {
-        $request->validate([
-            'nama' => 'required|string|unique:projek,nama|max:255'
-        ]);
-
-        Projek::create([
-            'nama' => $request->nama
-        ]);
-
-        return redirect('/rekap-projek')->with('success', 'Projek berhasil ditambahkan!');
-    }
-
     public function data(Request $request)
     {
         $query = ProjekStatus::join('projek', 'projek_status.projek_id', '=', 'projek.id')

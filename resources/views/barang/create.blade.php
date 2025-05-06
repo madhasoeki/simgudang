@@ -1,9 +1,8 @@
 <x-layout>
 
-    <x-slot:title>Tambah Barang</x-slot:title>
+    <x-slot:title>{{ $title }}</x-slot:title>
 
     <div class="container">
-        <h2>Tambah Barang Baru</h2>
         
         <form method="POST" action="{{ route('barang.store') }}">
             @csrf
@@ -46,6 +45,5 @@
             <a href="{{ route('barang.index') }}" class="btn btn-secondary">Batal</a>
         </form>
     </div>
+
 </x-layout>
-
-

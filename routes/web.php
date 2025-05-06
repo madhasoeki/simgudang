@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RekapController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\OpnameController;
+use App\Http\Controllers\ProjekController;
 use App\Http\Controllers\TransaksiMasukController;
 use App\Http\Controllers\TransaksiKeluarController;
 
@@ -13,9 +14,22 @@ Route::get('/', function () {
 });
 
 // Tampilkan stok barang dan kelola daftar barang
-Route::get('/kelola-barang', [BarangController::class, 'index'])->name('barang.index');
-Route::get('/kelola-barang/create', [BarangController::class, 'create'])->name('barang.create');
-Route::post('/kelola-barang', [BarangController::class, 'store'])->name('barang.store');
+Route::prefix('barang')->name('barang.')->group(function () {
+    Route::get('/', [BarangController::class, 'index'])->name('index');
+    Route::get('/create', [BarangController::class, 'create'])->name('create');
+    Route::post('/', [BarangController::class, 'store'])->name('store');
+    Route::get('/{kode}/edit', [BarangController::class, 'edit'])->name('edit');
+    Route::put('/{kode}', [BarangController::class, 'update'])->name('update');
+});
+
+// Tampilkan daftar projek dan kelola daftar projek
+Route::prefix('projek')->name('projek.')->group(function () {
+    Route::get('/', [ProjekController::class, 'index'])->name('index');
+    Route::get('/create', [ProjekController::class, 'createProjek'])->name('create');
+    Route::post('/', [ProjekController::class, 'storeProjek'])->name('store');
+    Route::get('/{kode}/edit', [ProjekController::class, 'edit'])->name('edit');
+    Route::put('/{kode}', [ProjekController::class, 'update'])->name('update');
+});
 
 // Tampilkan daftar barang masuk dan tambahkan daftar barang masuk
 Route::get('/transaksi-masuk', [TransaksiMasukController::class, 'index'])->name('transaksi-masuk.index');
@@ -51,8 +65,8 @@ Route::get('/laporan-project', function () {
 Route::get('/rekap-projek', function () {
     return view('rekap-barang-keluar', ['title' => 'Rekap Barang Keluar']);
 });
-Route::get('/projek/create', [RekapController::class, 'createProjek'])->name('projek.create');
-Route::post('/projek/store', [RekapController::class, 'storeProjek'])->name('projek.store');
+// Route::get('/projek/create', [RekapController::class, 'createProjek'])->name('projek.create');
+// Route::post('/projek/store', [RekapController::class, 'storeProjek'])->name('projek.store');
 Route::get('/rekap-projek/data', [RekapController::class, 'data'])->name('rekap-projek.data');
 Route::put('/rekap-projek/{id}/status', [RekapController::class, 'updateStatus'])->name('rekap-projek.update-status');
 

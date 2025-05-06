@@ -1,53 +1,66 @@
 <x-layout>
 
-    <x-slot:title>Kelola Barang</x-slot:title>
+    <x-slot:title>{{ $title }}</x-slot:title>
 
     <section class="content">
-        <div class="container-fluid">
+      <div class="container-fluid">
           <div class="row">
-            <div class="col-12">
-  
-                <div class="card">
-                    <div class="card-body">
-                      <table id="tabel" class="table table-bordered table-striped">
-                        <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Kode</th>
-                            <th>Nama Barang</th>
-                            <th>Stok</th>
-                            <th>Aksi</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($barangs as $index => $barang)
-                                
-                                <tr>
-                                    <td>{{ $index + 1 }}</td>
-                                    <td>{{ $barang->kode }}</td>
-                                    <td>{{ $barang->nama }}</td>
-                                    <td>{{ $barang->stok->jumlah ?? 0 }}</td> {{-- Jika punya relasi stok --}}
-                                    <td>
-                                        <button class="btn btx-xs btn-warning btn-sm"><i class="fas fa-edit"></i> Edit</button>
-                                        <button class="btn btx-xs btn-danger btn-sm"><i class="fas fa-trash"></i> Hapus</button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        </tbody>
-                      </table>
-                    </div>
-                    <!-- /.card-body -->
+              <div class="col-12">
+                  <div class="card">
+                      <div class="card-header">
+                          <h3 class="card-title">Daftar Barang</h3>
+                      </div>
+                      <div class="card-body">
+                          <table id="tabel" class="table table-bordered table-striped">
+                              <thead>
+                                  <tr>
+                                      <th>No</th>
+                                      <th>Kode</th>
+                                      <th>Nama Barang</th>
+                                      <th>Stok</th>
+                                      <th>Aksi</th>
+                                  </tr>
+                              </thead>
+                              <tbody>
+                                  @foreach($barangs as $index => $barang)
+                                      <tr>
+                                          <td>{{ $index + 1 }}</td>
+                                          <td>{{ $barang->kode }}</td>
+                                          <td>{{ $barang->nama }}</td>
+                                          <td>{{ $barang->stok->jumlah ?? 0 }}</td>
+                                          <td>
+                                              <a href="{{ route('barang.edit', $barang->kode) }}" class="btn btn-warning btn-sm">
+                                                  <i class="fas fa-edit"></i> Edit
+                                              </a>
+                                          </td>
+                                      </tr>
+                                  @endforeach
+                              </tbody>
+                          </table>
+                      </div>
                   </div>
-              <!-- /.card -->
-            </div>
-            <!-- /.col -->
+              </div>
           </div>
-          <!-- /.row -->
-        </div>
-        <!-- /.container-fluid -->
-      </section>
+      </div>
+  </section>
 
       <x-slot:script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+        @if(session('success'))
+          <script>
+            Swal.fire({
+              toast: true,
+              position: 'top-end',
+              icon: 'success',
+              title: '{{ session('success') }}',
+              showConfirmButton: false,
+              timer: 3000,
+              timerProgressBar: true
+            });
+          </script>
+        @endif
+
         <script>
             $(function () {
               $.extend(true, $.fn.dataTable.Buttons.defaults, {
@@ -68,7 +81,7 @@
                 ],
                 buttons: [
                   {
-                    text: '<i class="fas fa-plus"></i> Tambah Data',
+                    text: '<i class="fas fa-plus"></i> Tambah Data Barang',
                     action: function (e, dt, node, config) {
                       // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
                       window.location.href = "{{ route('barang.create') }}";

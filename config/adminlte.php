@@ -305,9 +305,14 @@ return [
             'icon' => 'fas fa-tachometer-alt',
         ],
         [
-            'text' => 'Kelola Barang',
-            'url' => '/kelola-barang',
+            'text' => 'Barang',
+            'url' => '/barang',
             'icon' => 'fas fa-box-open',
+        ],
+        [
+            'text' => 'Projek',
+            'url' => '/projek',
+            'icon' => 'fas fa-columns',
         ],
         [
             'text' => 'Catat Barang',
