@@ -13,9 +13,7 @@ return new class extends Migration
     {
         Schema::create('projek', function (Blueprint $table) {
             $table->id();
-            $table->string('nama', 100); // AL-AKRAM, MASJID, dll
-            $table->enum('status', ['DONE', 'LOADING'])->default('LOADING');
-            $table->decimal('total', 15, 2)->default(0); // Total pengeluaran proyek
+            $table->string('nama')->unique();
             $table->timestamps();
         });
     }

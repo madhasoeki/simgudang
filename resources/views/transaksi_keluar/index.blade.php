@@ -1,6 +1,6 @@
 
 <x-layout>
-    <x-slot:title>Catat Barang Masuk</x-slot:title>
+    <x-slot:title>Catat Barang Keluar</x-slot:title>
 
     <x-slot:style>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
@@ -23,7 +23,7 @@
                                 <span>Pilih Rentang Tanggal</span>
                             </button>
                         </div>
-                        <a href="{{ route('transaksi-masuk.create') }}" class="btn btn-block btn-primary col-sm-2">
+                        <a href="{{ route('transaksi-keluar.create') }}" class="btn btn-block btn-primary col-sm-2">
                             <i class="fas fa-plus"></i>
                             Tambah Barang
                         </a>
@@ -41,6 +41,8 @@
                             <th>Satuan</th>
                             <th>Harga</th>
                             <th>Jumlah</th>
+                            <th>Keterangan</th>
+                            <th>Tempat</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -49,6 +51,8 @@
                         <tfoot>
                             <tr>
                                 <th colspan="7">Total</th>
+                                <th></th>
+                                <th></th>
                                 <th></th>
                             </tr>
                         </tfoot>
@@ -95,7 +99,7 @@
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
-                        "url": "/transaksi-masuk/data",
+                        "url": "/transaksi-keluar/data",
                         "data": function (d) {
                             d.start_date = startDate.format('YYYY-MM-DD');
                             d.end_date = endDate.format('YYYY-MM-DD');
@@ -125,7 +129,9 @@
                             "render": function(data) {
                                 return 'Rp' + parseFloat(data).toLocaleString('id-ID');
                             }
-                        }
+                        },
+                        { "data": "keterangan" },
+                        { "data": "tempat" }
                     ],
                     "buttons": [
                         {

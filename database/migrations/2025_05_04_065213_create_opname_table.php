@@ -19,16 +19,18 @@ return new class extends Migration
             $table->integer('stock_awal');
             $table->integer('total_masuk');
             $table->integer('total_keluar');
-            $table->integer('total_lapangan');
-            $table->integer('miss');
-            $table->decimal('harga', 15, 2);
-            
+            $table->integer('stock_total');
+            $table->integer('total_lapangan')->default(0);
+            $table->integer('selisih')->default(0);
+            $table->text('keterangan')->nullable();
+            $table->boolean('approved')->default(false);
+            $table->timestamp('approved_at')->nullable();
+            $table->timestamps();
+    
             $table->foreign('barang_kode')
                   ->references('kode')
                   ->on('barang')
                   ->onDelete('cascade');
-    
-            $table->timestamps();
         });
     }
 

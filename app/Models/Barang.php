@@ -2,23 +2,43 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 
-class Barang extends Model 
+class Barang extends Model
 {
-    // Table configuration
+    use HasFactory;
+
     protected $table = 'barang';
     protected $primaryKey = 'kode';
     public $incrementing = false;
     protected $keyType = 'string';
-    
-    // Mass assignment protection
-    protected $fillable = ['kode', 'nama', 'satuan'];
 
-    // Relationship definition (correct placement inside class)
-    public function stok(): HasOne
+    protected $fillable = [
+        'kode',
+        'nama',
+        'satuan'
+    ];
+
+    // Relasi ke tabel stok
+    public function stok()
     {
         return $this->hasOne(Stok::class, 'barang_kode', 'kode');
+    }
+
+    // Relasi ke tabel opname
+    public function opnames()
+    {
+        return $this->hasMany(Opname::class, 'barang_kode', 'kode');
+    }
+
+    public function transaksiMasuk()
+    {
+        return $this->hasMany(TransaksiMasuk::class, 'barang_kode', 'kode');
+    }
+
+    public function transaksiKeluar()
+    {
+        return $this->hasMany(TransaksiKeluar::class, 'barang_kode', 'kode');
     }
 }
