@@ -18,51 +18,55 @@ class GenerateOpname extends Command
         $start = Carbon::parse($month)->startOfMonth();
         $end = Carbon::parse($month)->endOfMonth();
 
-        // Ambil semua barang yang aktif
         $barangs = Barang::all();
 
         foreach ($barangs as $barang) {
-            // Cek apakah opname untuk barang ini di bulan ini sudah ada
-            $existingOpname = Opname::where([
-                'barang_kode' => $barang->kode,
-                'periode_awal' => $start,
-                'periode_akhir' => $end
-            ])->exists();
+            // Cek opname berdasarkan tahun dan bulan dari periode_awal
+            $existingOpname = Opname::where('barang_kode', $barang->kode)
+                ->whereYear('periode_awal', $start->year)
+                ->whereMonth('periode_awal', $start->month)
+                ->first();
 
-            if (!$existingOpname) {
-                $total_masuk = $barang->transaksiMasuk()
-                    ->whereBetween('tanggal', [$start, $end])
-                    ->sum('qty');
+            $total_masuk = $barang->transaksiMasuk()
+                ->whereBetween('tanggal', [$start, $end])
+                ->sum('qty');
 
-                $total_keluar = $barang->transaksiKeluar()
-                    ->whereBetween('tanggal', [$start, $end])
-                    ->sum('qty');
+            $total_keluar = $barang->transaksiKeluar()
+                ->whereBetween('tanggal', [$start, $end])
+                ->sum('qty');
 
-                // Ambil stok awal dari bulan sebelumnya
-                $previousMonth = $start->copy()->subMonth();
-                $stock_awal = Opname::where('barang_kode', $barang->kode)
-                    ->where('periode_awal', $previousMonth->startOfMonth())
-                    ->value('total_lapangan') ?? 0;
+            $previousMonth = $start->copy()->subMonth();
+            $stock_awal = Opname::where('barang_kode', $barang->kode)
+                ->whereYear('periode_awal', $previousMonth->year)
+                ->whereMonth('periode_awal', $previousMonth->month)
+                ->value('total_lapangan') ?? 0;
 
-                Opname::updateOrCreate(
-                    [
-                        'barang_kode' => $barang->kode,
-                        'periode_awal' => $start,
-                        'periode_akhir' => $end
-                    ],
-                    [
-                        'stock_awal' => $stock_awal,
-                        'total_masuk' => $total_masuk,
-                        'total_keluar' => $total_keluar,
-                        'stock_total' => $stock_awal + $total_masuk - $total_keluar,
-                        'total_lapangan' => 0,
-                        'selisih' => 0,
-                        'approved' => false
-                    ]
-                );
+            if ($existingOpname) {
+                $existingOpname->update([
+                    'stock_awal' => $stock_awal,
+                    'total_masuk' => $total_masuk,
+                    'total_keluar' => $total_keluar,
+                    'stock_total' => $stock_awal + $total_masuk - $total_keluar,
+                    // Pertahankan nilai lapangan dan approval
+                    'total_lapangan' => $existingOpname->total_lapangan,
+                    'selisih' => $existingOpname->total_lapangan - ($stock_awal + $total_masuk - $total_keluar),
+                    'approved' => $existingOpname->approved
+                ]);
+            } else {
+                Opname::create([
+                    'barang_kode' => $barang->kode,
+                    'periode_awal' => $start,
+                    'periode_akhir' => $end,
+                    'stock_awal' => $stock_awal,
+                    'total_masuk' => $total_masuk,
+                    'total_keluar' => $total_keluar,
+                    'stock_total' => $stock_awal + $total_masuk - $total_keluar,
+                    'total_lapangan' => 0,
+                    'selisih' => 0,
+                    'approved' => false
+                ]);
             }
         }
-
-        $this->info("Data opname bulan {$month} berhasil digenerate!");
+        $this->info("Data opname bulan {$month} berhasil diupdate!");
     }
 }

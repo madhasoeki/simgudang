@@ -35,7 +35,7 @@
                                       <th>Total Masuk</th>
                                       <th>Total Keluar</th>
                                       <th>Total</th>
-                                      <th>Stok Lapangan</th>
+                                      <th>Lapangan</th>
                                       <th>Selisih</th>
                                       <th>Keterangan</th>
                                       <th>Aksi</th>
@@ -141,7 +141,7 @@
                                     <a href="/stock-opname/${data}/input-lapangan" 
                                       class="btn btn-sm btn-info" 
                                       title="Input Data Lapangan">
-                                        <i class="fas fa-clipboard-check"></i> Tambah Data Lapangan
+                                        <i class="fas fa-clipboard-check"></i> Input Lapangan
                                     </a>
                                     ` : ''}
                                     
@@ -149,7 +149,7 @@
                                     <button class="btn btn-sm btn-success btn-approve" 
                                             data-id="${data}"
                                             title="Approve">
-                                        <i class="fas fa-check"></i> Approve
+                                        <i class="fas fa-check"></i>
                                     </button>
                                     ` : '<span class="text-success"><i class="fas fa-check-circle"></i> Approved</span>'}
                                 </div>
