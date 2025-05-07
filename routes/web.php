@@ -71,5 +71,4 @@ Route::get('/rekap-projek/data', [RekapController::class, 'data'])->name('rekap-
 Route::put('/rekap-projek/{id}/status', [RekapController::class, 'updateStatus'])->name('rekap-projek.update-status');
 
 Auth::routes();
-
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Auth::routes(['register' => false]);

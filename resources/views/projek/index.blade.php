@@ -70,17 +70,18 @@
                 }
               });
               const table = $("#tabel").DataTable({
-                responsive: true,
-                lengthChange: false,
-                autoWidth: false,
-                ordering: false,
-                columnDefs: [
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "ordering": false,
+                "info": false,
+                "columnDefs": [
                   { "width": "20px", "targets": [0] },
                   { "width": "200px", "targets": [2] }
                 ],
-                buttons: [
+                "buttons": [
                   {
-                    text: '<i class="fas fa-plus"></i> Tambah Projek',
+                    "text": '<i class="fas fa-plus"></i> Tambah Projek',
                     action: function (e, dt, node, config) {
                       // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
                       window.location.href = "{{ route('projek.create') }}";

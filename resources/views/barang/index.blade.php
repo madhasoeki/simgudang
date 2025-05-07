@@ -7,9 +7,6 @@
           <div class="row">
               <div class="col-12">
                   <div class="card">
-                      <div class="card-header">
-                          <h3 class="card-title">Daftar Barang</h3>
-                      </div>
                       <div class="card-body">
                           <table id="tabel" class="table table-bordered table-striped">
                               <thead>
@@ -71,17 +68,18 @@
                 }
               });
               const table = $("#tabel").DataTable({
-                responsive: true,
-                lengthChange: false,
-                autoWidth: false,
-                ordering: false,
-                columnDefs: [
+                "responsive": true,
+                "lengthChange": false,
+                "autoWidth": false,
+                "ordering": false,
+                "info": false,
+                "columnDefs": [
                   { "width": "20px", "targets": [0, 1, 3] },
                   { "width": "150px", "targets": 4 } 
                 ],
-                buttons: [
+                "buttons": [
                   {
-                    text: '<i class="fas fa-plus"></i> Tambah Data Barang',
+                    "text": '<i class="fas fa-plus"></i> Tambah Data Barang',
                     action: function (e, dt, node, config) {
                       // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
                       window.location.href = "{{ route('barang.create') }}";

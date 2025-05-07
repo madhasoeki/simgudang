@@ -185,3 +185,5 @@
     </div>
 
 </x-layout>
+
+{{-- @extends('layouts.app') --}}
