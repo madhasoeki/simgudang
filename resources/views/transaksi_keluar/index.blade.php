@@ -4,8 +4,6 @@
 
     <x-slot:style>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.dataTables.min.css">
-        <link rel="stylesheet" href="https://cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
         <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css">
 
     </x-slot:style>
@@ -70,11 +68,6 @@
       </section>
 
       <x-slot:script>
-        <!-- Load jQuery terlebih dahulu -->
-        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-        <!-- Load library lainnya setelah jQuery -->
-        <script src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
-        <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
         <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
@@ -138,17 +131,53 @@
                             extend: 'excel',
                             text: '<i class="fa-solid fa-download"></i> Export',
                             className: 'btn btn-success btn-sm',
-                            title: "REKAPAN TOTAL",
+                            title: "REKAPAN BARANG KELUAR",
                             messageTop: function() {
                                 return 'Periode: ' + startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY');
                             },
+                            exportOptions: {
+                                columns: ':not(:first-child)' // Kecualikan kolom pertama
+                            },
                             customize: function (xlsx) {
                                 const sheet = xlsx.xl.worksheets['sheet1.xml'];
+                                const $ = window.$;
+
+                                // Hitung total kolom Jumlah
                                 const total = table.column(7).data().reduce((sum, val) => {
-                                    return sum + parseFloat(val.replace('Rp', '').replace(/\./g, ''));
+                                    const angkaBersih = val.toString().replace(/[^\d]/g, '');
+                                    return sum + parseInt(angkaBersih || '0') / 100;
                                 }, 0);
-                                
-                                // Tambahkan logika tambahan untuk Excel di sini
+
+                                // Cari elemen <sheetData>
+                                const sheetData = $('sheetData', sheet);
+
+                                // Hitung baris terakhir
+                                const lastRow = $('row', sheet).length + 1;
+
+                                // Buat elemen baris total sebagai XML string
+                                const totalRow = `
+                                    <row r="${lastRow}">
+                                        <c t="inlineStr" r="A${lastRow}">
+                                            <is><t>Total</t></is>
+                                        </c>
+                                        <c t="inlineStr" r="H${lastRow}">
+                                            <is><t>Rp${total.toLocaleString('id-ID')}</t></is>
+                                        </c>
+                                    </row>
+                                `;
+
+                                // Tambahkan ke dalam sheetData
+                                sheetData.append(totalRow);
+
+                                // Merge A-G untuk label "Total"
+                                let mergeCells = $('mergeCells', sheet);
+                                if (mergeCells.length === 0) {
+                                    const mergeCellsTag = `<mergeCells count="1"><mergeCell ref="A${lastRow}:G${lastRow}"/></mergeCells>`;
+                                    $('worksheet', sheet).append(mergeCellsTag);
+                                } else {
+                                    mergeCells.attr('count', mergeCells.find('mergeCell').length + 1);
+                                    mergeCells.append(`<mergeCell ref="A${lastRow}:G${lastRow}"/>`);
+                                }
                             }
                         }
                     ],

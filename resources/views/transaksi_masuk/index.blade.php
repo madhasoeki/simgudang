@@ -130,14 +130,17 @@
                             messageTop: function() {
                                 return 'Periode: ' + startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY');
                             },
+                            exportOptions: {
+                                columns: ':not(:first-child)' // Kecualikan kolom pertama
+                            },
                             customize: function (xlsx) {
                                 const sheet = xlsx.xl.worksheets['sheet1.xml'];
-                                const $ = window.$; // Pastikan jQuery tersedia
+                                const $ = window.$;
 
                                 // Hitung total kolom Jumlah
                                 const total = table.column(7).data().reduce((sum, val) => {
                                     const angkaBersih = val.toString().replace(/[^\d]/g, '');
-                                    return sum + parseInt(angkaBersih || '0') / 100; // Normalisasi
+                                    return sum + parseInt(angkaBersih || '0') / 100;
                                 }, 0);
 
                                 // Cari elemen <sheetData>
@@ -152,7 +155,7 @@
                                         <c t="inlineStr" r="A${lastRow}">
                                             <is><t>Total</t></is>
                                         </c>
-                                        <c t="inlineStr" r="H${lastRow}">
+                                        <c t="inlineStr" r="G${lastRow}">
                                             <is><t>Rp${total.toLocaleString('id-ID')}</t></is>
                                         </c>
                                     </row>
@@ -161,17 +164,16 @@
                                 // Tambahkan ke dalam sheetData
                                 sheetData.append(totalRow);
 
-                                // === Merge A-G untuk label "Total" ===
+                                // Merge A-G untuk label "Total"
                                 let mergeCells = $('mergeCells', sheet);
                                 if (mergeCells.length === 0) {
-                                    const mergeCellsTag = `<mergeCells count="1"><mergeCell ref="A${lastRow}:G${lastRow}"/></mergeCells>`;
+                                    const mergeCellsTag = `<mergeCells count="1"><mergeCell ref="A${lastRow}:F${lastRow}"/></mergeCells>`;
                                     $('worksheet', sheet).append(mergeCellsTag);
                                 } else {
                                     mergeCells.attr('count', mergeCells.find('mergeCell').length + 1);
-                                    mergeCells.append(`<mergeCell ref="A${lastRow}:G${lastRow}"/>`);
+                                    mergeCells.append(`<mergeCell ref="A${lastRow}:F${lastRow}"/>`);
                                 }
                             }
-
                         }
                     ],
                     "footerCallback": function (row, data, start, end, display) {
