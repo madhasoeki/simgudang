@@ -11,16 +11,13 @@
           <div class="row">
             <div class="col-12">
                 <div class="card">
-                    <div class="card-header d-flex justify-content-between align-items-center row">
-                        <div class="dropdown col">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <div class="dropdown">
                             <button class="btn btn-default" id="monthPicker">
                                 <i class="far fa-calendar-alt mr-2"></i>
                                 <span>{{ date('F Y') }}</span> <!-- Default bulan saat ini -->
                             </button>
                         </div>
-                        <a href="{{ route('projek.create') }}" class="btn btn-primary col-2">
-                            <i class="fas fa-plus"></i> Tambah Projek
-                        </a>
                     </div>
                     
                     <div class="card-body">
@@ -179,7 +176,9 @@
                     alwaysShowCalendars: true,
                     ranges: {
                         'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-                        'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                        'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                        '2 Bulan Lalu': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
+                        '3 Bulan Lalu': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
                     }
                 }, function(start, end, label) {
                     startDate = start;

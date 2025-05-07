@@ -63,4 +63,10 @@ class ProjekController extends Controller
         // Redirect setelah berhasil update
         return redirect()->route('projek.index')->with('success', 'Projek berhasil diperbarui!');
     }
+
+    public function list()
+    {
+        $projek = Projek::orderBy('nama', 'asc')->get(['id', 'nama']);
+        return response()->json($projek);
+    }
 }

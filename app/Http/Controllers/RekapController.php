@@ -9,6 +9,12 @@ use Yajra\DataTables\Facades\DataTables;
 
 class RekapController extends Controller
 {
+    public function index()
+    {
+        return view('rekap-barang-keluar', [
+            'title' => 'Rekap Status Projek',
+        ]);
+    }
     public function data(Request $request)
     {
         $query = ProjekStatus::join('projek', 'projek_status.projek_id', '=', 'projek.id')

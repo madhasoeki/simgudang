@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\Stok;
 use App\Models\Barang;
 use App\Models\Projek;
@@ -98,11 +99,53 @@ class TransaksiKeluarController extends Controller
             DB::commit();
 
             return redirect()->route('transaksi-keluar.index')
-                ->with('success', 'Transaksi berhasil disimpan!');
+                ->with('success', 'Transaksi Keluar berhasil disimpan!');
 
         } catch (\Exception $e) {
             DB::rollBack();
             return back()->withInput()->with('error', 'Gagal menyimpan: ' . $e->getMessage());
         }
+    }
+    
+    public function laporanProjectData(Request $request)
+    {
+        if (!$request->projek_id) {
+            return DataTables::of([])->toJson();
+        }
+    
+        $month = $request->month ?? now()->format('Y-m');
+        $start = Carbon::parse($month)->startOfMonth();
+        $end = Carbon::parse($month)->endOfMonth();
+    
+        // Query dengan filter projek_id DAN date range
+        $query = TransaksiKeluar::with(['barang', 'projek'])
+            ->where('projek_id', $request->projek_id)
+            ->whereBetween('tanggal', [$start, $end]);
+
+        return DataTables::of($query)
+            ->addIndexColumn()
+            ->addColumn('kode', function ($row) {
+                return $row->barang->kode ?? '-';
+            })
+            ->addColumn('nama_barang', function ($row) {
+                return $row->barang->nama ?? '-';
+            })
+            ->addColumn('satuan', function ($row) {
+                return $row->barang->satuan ?? '-';
+            })
+            ->addColumn('projek_nama', function ($row) {
+                return $row->projek->nama ?? '-';
+            })
+            ->editColumn('tanggal', function ($row) {
+                return $row->tanggal->format('d/m/Y');
+            })
+            ->editColumn('harga', function ($row) {
+                return 'Rp' . number_format($row->harga, 0, ',', '.');
+            })
+            ->editColumn('jumlah', function ($row) {
+                return 'Rp' . number_format($row->jumlah, 0, ',', '.');
+            })
+            ->rawColumns([])
+            ->toJson();
     }
 }

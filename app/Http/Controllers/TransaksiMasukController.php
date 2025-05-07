@@ -7,7 +7,6 @@ use App\Models\Barang;
 use Illuminate\Http\Request;
 use App\Models\TransaksiMasuk;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
 
@@ -90,7 +89,7 @@ class TransaksiMasukController extends Controller
             DB::commit();
 
             return redirect()->route('transaksi-masuk.index')
-                ->with('success', 'Transaksi berhasil disimpan');
+                ->with('success', 'Transaksi masuk berhasil disimpan');
 
         } catch (\Exception $e) {
             DB::rollBack();

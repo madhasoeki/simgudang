@@ -19,7 +19,7 @@ class OpnameController extends Controller
         // Generate data untuk semua barang yang belum ada di bulan ini
         Artisan::call('opname:generate', ['month' => $month]);
 
-        return view('stock-opname', [
+        return view('opname.index', [
             'title' => 'Stock Opname',
             'currentMonth' => $month
         ]);
@@ -60,7 +60,7 @@ class OpnameController extends Controller
     public function showInputForm($id)
     {
         $opname = Opname::with('barang')->findOrFail($id);
-        return view('input-lapangan', [
+        return view('opname.input-lapangan', [
             'title' => 'Input Stok Lapangan',
             'opname' => $opname
         ]);
@@ -80,7 +80,7 @@ class OpnameController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        return redirect()->route('stock-opname')->with('success', 'Data lapangan berhasil disimpan!');
+        return redirect()->route('opname.index')->with('success', 'Data lapangan berhasil disimpan!');
     }
 
     public function approve($id, Request $request)
@@ -100,5 +100,36 @@ class OpnameController extends Controller
         });
         
         return response()->json(['success' => true]);
+    }
+
+    public function missIndex(Request $request)
+    {
+        $month = $request->month ?? now()->format('Y-m');
+        return view('opname.miss', [
+            'title' => 'Data Miss',
+            'currentMonth' => $month
+        ]);
+    }
+
+    public function dataMiss(Request $request)
+    {
+        $month = $request->month ?? now()->format('Y-m');
+        $start = Carbon::parse($month)->startOfMonth();
+        $end = Carbon::parse($month)->endOfMonth();
+
+        $query = Opname::with('barang')
+            ->where('selisih', '!=', 0) // Filter hanya data dengan selisih tidak sama dengan 0
+            ->whereBetween('periode_awal', [$start, $end]) // Filter berdasarkan periode
+            ->select('opname.*');
+
+        return DataTables::of($query)
+            ->addIndexColumn() // Tambahkan nomor urut
+            ->addColumn('barang_nama', function ($data) {
+                return $data->barang->nama ?? '-';
+            })
+            ->addColumn('barang_satuan', function ($data) {
+                return $data->barang->satuan ?? '-';
+            })
+            ->make(true);
     }
 }

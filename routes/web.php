@@ -13,7 +13,7 @@ Route::get('/', function () {
     return view('dashboard', ['title' => 'Dashboard']);
 });
 
-// Tampilkan stok barang dan kelola daftar barang
+// Kelola daftar barang
 Route::prefix('barang')->name('barang.')->group(function () {
     Route::get('/', [BarangController::class, 'index'])->name('index');
     Route::get('/create', [BarangController::class, 'create'])->name('create');
@@ -22,53 +22,58 @@ Route::prefix('barang')->name('barang.')->group(function () {
     Route::put('/{kode}', [BarangController::class, 'update'])->name('update');
 });
 
-// Tampilkan daftar projek dan kelola daftar projek
+// Kelola daftar projek
 Route::prefix('projek')->name('projek.')->group(function () {
     Route::get('/', [ProjekController::class, 'index'])->name('index');
     Route::get('/create', [ProjekController::class, 'createProjek'])->name('create');
     Route::post('/', [ProjekController::class, 'storeProjek'])->name('store');
-    Route::get('/{kode}/edit', [ProjekController::class, 'edit'])->name('edit');
-    Route::put('/{kode}', [ProjekController::class, 'update'])->name('update');
+    Route::get('/{id}/edit', [ProjekController::class, 'edit'])->name('edit');
+    Route::put('/{id}', [ProjekController::class, 'update'])->name('update');
+
+    Route::get('/list', [ProjekController::class, 'list'])->name('list');
 });
 
-// Tampilkan daftar barang masuk dan tambahkan daftar barang masuk
-Route::get('/transaksi-masuk', [TransaksiMasukController::class, 'index'])->name('transaksi-masuk.index');
-Route::get('/transaksi-masuk/data', [TransaksiMasukController::class, 'data']);
-Route::get('/transaksi-masuk/create', [TransaksiMasukController::class, 'create'])->name('transaksi-masuk.create');
-Route::post('/transaksi-masuk', [TransaksiMasukController::class, 'store'])->name('transaksi-masuk.store');
-
-// Transaksi Keluar
-Route::get('/transaksi-keluar', [TransaksiKeluarController::class, 'index'])->name('transaksi-keluar.index');
-Route::get('/transaksi-keluar/data', [TransaksiKeluarController::class, 'data'])->name('transaksi-keluar.data');
-Route::get('/transaksi-keluar/create', [TransaksiKeluarController::class, 'create'])->name('transaksi-keluar.create');
-Route::post('/transaksi-keluar', [TransaksiKeluarController::class, 'store'])->name('transaksi-keluar.store');
-
-
-Route::get('/stock-opname', [OpnameController::class, 'index'])->name('stock-opname');
-Route::get('/stock-opname/data', [OpnameController::class, 'data'])->name('stock-opname.data');
-Route::post('/stock-opname/{id}/approve', [OpnameController::class, 'approve'])->name('stock-opname.approve');
-Route::get('/stock-opname/{id}/input-lapangan', [OpnameController::class, 'showInputForm'])->name('stock-opname.input-form');
-Route::put('/stock-opname/{id}/simpan-lapangan', [OpnameController::class, 'simpanLapangan'])->name('stock-opname.simpan-lapangan');
-
-// Route::get('/stock-opname', function () {
-//     return view('stock-opname', ['title' => 'Stock Opname']);
-// });
-
-Route::get('/data-miss', function () {
-    return view('data-miss', ['title' => 'Data Miss']);
+// Kelola transaksi masuk
+Route::prefix('transaksi-masuk')->name('transaksi-masuk.')->group(function () {
+    Route::get('/', [TransaksiMasukController::class, 'index'])->name('index');
+    Route::get('/data', [TransaksiMasukController::class, 'data'])->name('data');
+    Route::get('/create', [TransaksiMasukController::class, 'create'])->name('create');
+    Route::post('/', [TransaksiMasukController::class, 'store'])->name('store');
 });
 
+// Kelola transaksi keluar
+Route::prefix('transaksi-keluar')->name('transaksi-keluar.')->group(function () {
+    Route::get('/', [TransaksiKeluarController::class, 'index'])->name('index');
+    Route::get('/data', [TransaksiKeluarController::class, 'data'])->name('data');
+    Route::get('/create', [TransaksiKeluarController::class, 'create'])->name('create');
+    Route::post('/', [TransaksiKeluarController::class, 'store'])->name('store');
+});
+
+// Kelola opname
+Route::prefix('opname')->name('opname.')->group(function () {
+    Route::get('/', [OpnameController::class, 'index'])->name('index');
+    Route::get('/data', [OpnameController::class, 'data'])->name('data');
+    Route::post('/{id}/approve', [OpnameController::class, 'approve'])->name('approve');
+    Route::get('/{id}/input-lapangan', [OpnameController::class, 'showInputForm'])->name('input-form');
+    Route::put('/{id}/simpan-lapangan', [OpnameController::class, 'simpanLapangan'])->name('simpan-lapangan');
+
+    // Data miss
+    Route::get('/miss', [OpnameController::class, 'missIndex'])->name('miss.index');
+    Route::get('/miss/data', [OpnameController::class, 'dataMiss'])->name('miss.data');
+});
+
+// Laporan dan rekap
 Route::get('/laporan-project', function () {
     return view('laporan-project', ['title' => 'Laporan Per Project']);
 });
+Route::get('/laporan-project/data', [TransaksiKeluarController::class, 'laporanProjectData'])->name('laporan-project.data');
 
-Route::get('/rekap-projek', function () {
-    return view('rekap-barang-keluar', ['title' => 'Rekap Barang Keluar']);
+
+Route::prefix('rekap-projek')->name('rekap-projek.')->group(function () {
+    Route::get('/', [RekapController::class, 'index'])->name('index');
+    Route::get('/data', [RekapController::class, 'data'])->name('data');
+    Route::put('/{id}/status', [RekapController::class, 'updateStatus'])->name('update-status');
 });
-// Route::get('/projek/create', [RekapController::class, 'createProjek'])->name('projek.create');
-// Route::post('/projek/store', [RekapController::class, 'storeProjek'])->name('projek.store');
-Route::get('/rekap-projek/data', [RekapController::class, 'data'])->name('rekap-projek.data');
-Route::put('/rekap-projek/{id}/status', [RekapController::class, 'updateStatus'])->name('rekap-projek.update-status');
 
-Auth::routes();
+// Autentikasi
 Auth::routes(['register' => false]);

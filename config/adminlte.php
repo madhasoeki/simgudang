@@ -336,27 +336,27 @@ return [
             'submenu' => [
                 [
                     'text' => 'Stock Opname',
-                    'url' => 'stock-opname'
+                    'url' => '/opname', // Ganti dari stock-opname ke opname
                 ],
                 [
                     'text' => 'Data Miss',
-                    'url' => 'data-miss'
+                    'url' => '/opname/miss', // Tambahkan menu untuk Data Miss
                 ],
                 [
                     'text' => 'Laporan Project',
-                    'url' => 'laporan-project'
+                    'url' => '/laporan-project',
                 ],
                 [
                     'text' => 'Rekap Barang',
-                    'url' => 'rekap-projek'
+                    'url' => '/rekap-projek',
                 ],
-            ]
+            ],
         ],
         [
             'text' => 'Kelola User',
-            'url' => 'kelola-user',
+            'url' => '/kelola-user',
             'icon' => 'fas fa-users',
-        ]
+        ],
     ],
 
     /*

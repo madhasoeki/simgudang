@@ -9,7 +9,7 @@
                         <div class="card-header">
                             <h3 class="card-title">Input Stok Lapangan</h3>
                         </div>
-                        <form action="{{ route('stock-opname.simpan-lapangan', $opname->id) }}" method="POST">
+                        <form action="{{ route('opname.simpan-lapangan', $opname->id) }}" method="POST">
                             @csrf
                             @method('PUT')
                             <div class="card-body">
@@ -53,7 +53,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Simpan
                                 </button>
-                                <a href="{{ route('stock-opname') }}" class="btn btn-default">
+                                <a href="{{ route('opname.index') }}" class="btn btn-default">
                                     Batal
                                 </a>
                             </div>
