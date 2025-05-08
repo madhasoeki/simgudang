@@ -73,6 +73,10 @@
                     "ordering": false,
                     "processing": true,
                     "serverSide": true,
+                    "info": false,
+                    "language": {
+                        "emptyTable": "Belum ada rekap barang keluar"
+                    },
                     "columnDefs": [
                         { "width": '20px', "targets": 0 },
                         { "width": '20px', "targets": 4 },

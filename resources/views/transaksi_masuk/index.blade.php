@@ -1,4 +1,3 @@
-
 <x-layout>
     <x-slot:title>Catat Barang Masuk</x-slot:title>
 
@@ -96,6 +95,9 @@
                             d.end_date = endDate.format('YYYY-MM-DD');
                             return d;
                         }
+                    },
+                    "language": {
+                        "emptyTable": "Belum ada data barang masuk"
                     },
                     "columns": [
                         { "data": "DT_RowIndex" },

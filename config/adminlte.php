@@ -354,7 +354,7 @@ return [
         ],
         [
             'text' => 'Kelola User',
-            'url'  => '/kelola-user',
+            'url'  => '/users',
             'icon' => 'fas fa-fw fa-users',
             'role' => 'super-admin',
         ],

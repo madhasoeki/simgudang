@@ -54,7 +54,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/', [TransaksiKeluarController::class, 'store'])->name('store');
     });
 
-    // Opname
+    // Grouping routes for Opname with prefix and name
     Route::prefix('opname')->name('opname.')->group(function () {
         Route::get('/', [OpnameController::class, 'index'])->name('index');
         Route::get('/data', [OpnameController::class, 'data'])->name('data');
@@ -65,11 +65,13 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/miss/data', [OpnameController::class, 'dataMiss'])->name('miss.data');
     });
 
-    // Laporan dan rekap
-    Route::get('/laporan-project', function () {
-        return view('laporan-project', ['title' => 'Laporan Per Project']);
+    // Grouping routes for Laporan and Rekap with prefix and name
+    Route::prefix('laporan-project')->name('laporan-project.')->group(function () {
+        Route::get('/', function () {
+            return view('laporan-project', ['title' => 'Laporan Per Project']);
+        })->name('index');
+        Route::get('/data', [TransaksiKeluarController::class, 'laporanProjectData'])->name('data');
     });
-    Route::get('/laporan-project/data', [TransaksiKeluarController::class, 'laporanProjectData'])->name('laporan-project.data');
 
     Route::prefix('rekap-projek')->name('rekap-projek.')->group(function () {
         Route::get('/', [RekapController::class, 'index'])->name('index');
@@ -77,10 +79,12 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{id}/status', [RekapController::class, 'updateStatus'])->name('update-status');
     });
 
-    // Kelola User (ditambah middleware role)
-    Route::middleware(['role:super-admin'])->group(function () {
-        Route::get('/kelola-user', [UserController::class, 'index'])->name('users.index');
-        Route::resource('users', UserController::class)->except(['show']);
-        Route::post('users/{user}/change-password', [UserController::class, 'changePassword'])->name('users.change-password');
+    // Grouping routes for User Management with middleware and prefix
+    Route::middleware(['role:super-admin'])->prefix('users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::resource('/', UserController::class)->except(['show']);
+        Route::post('/{user}/change-password', [UserController::class, 'changePassword'])->name('change-password');
+        Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::put('/{user}', [UserController::class, 'update'])->name('update');
     });
 });

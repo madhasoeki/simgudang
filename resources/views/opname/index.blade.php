@@ -3,11 +3,6 @@
     
     <x-slot:style>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css">
-        <style>
-            .diff-negative { background-color: #ffe6e6; }
-            .diff-positive { background-color: #e6ffe6; }
-            .editable-cell { min-width: 100px; }
-        </style>
     </x-slot:style>
   
     <section class="content">
@@ -25,7 +20,7 @@
                         </div>
                         
                         <div class="card-body">
-                            <table id="tabel-opname" class="table table-bordered table-hover">
+                            <table id="tabel-opname" class="table table-bordered table-striped">
                                 <thead>
                                     <tr>
                                         <th>No</th>
@@ -180,9 +175,10 @@
                 ],
                 ordering: false,
                 language: {
-                    lengthMenu: "",
-                    info: "", 
-                }
+                    emptyTable: "Belum ada data opname",
+                    zeroRecords: "Tidak ada data yang ditemukan",
+                },
+                info: false,
             });
 
             $('#tabel-opname').on('click', '.btn-approve', function() {

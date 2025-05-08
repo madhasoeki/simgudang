@@ -133,7 +133,10 @@
               lengthChange: false,
               autoWidth: false,
               ordering: false,
-              info: false
+              info: false,
+              language: {
+                  emptyTable: "Tidak ada data miss"
+              }
           });
       });
   </script>

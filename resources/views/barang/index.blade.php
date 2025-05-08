@@ -57,6 +57,10 @@
                 "autoWidth": false,
                 "ordering": false,
                 "info": false,
+                "language": {
+                  "emptyTable": "Belum ada barang yang ditambahkan",
+                  "zeroRecords": "Tidak ada data yang ditemukan",
+                },
                 "columnDefs": [
                   { "width": "20px", "targets": [0, 1, 3] },
                   { "width": "150px", "targets": 4 } 

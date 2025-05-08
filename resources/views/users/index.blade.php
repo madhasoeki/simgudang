@@ -68,7 +68,7 @@
     <x-slot:script>
         <script>
             $(document).ready(function () {
-                $('#tabel-users').DataTable({
+                const table = $('#tabel-users').DataTable({
                     responsive: true,
                     lengthChange: false,
                     autoWidth: false,

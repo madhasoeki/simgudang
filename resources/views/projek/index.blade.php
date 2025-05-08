@@ -60,6 +60,9 @@
                 "autoWidth": false,
                 "ordering": false,
                 "info": false,
+                "language": {
+                  "emptyTable": "Belum ada projek"
+                },
                 "columnDefs": [
                   { "width": "20px", "targets": [0] },
                   { "width": "200px", "targets": [2] }
