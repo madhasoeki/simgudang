@@ -24,18 +24,30 @@
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    <tr>
+                                        <td>1</td>
+                                        <td>{{ auth()->user()->name }}</td>
+                                        <td>{{ auth()->user()->email }}</td>
+                                        <td>
+                                            <a href="{{ route('users.edit', auth()->user()->id) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Edit
+                                            </a>
+                                        </td>
+                                    </tr>
                                     @foreach($users as $index => $user)
                                         <tr>
-                                            <td>{{ $index + 1 }}</td>
+                                            <td>{{ $index + 2 }}</td>
                                             <td>{{ $user->name }}</td>
                                             <td>{{ $user->email }}</td>
                                             <td>
                                                 <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">
                                                     <i class="fas fa-edit"></i> Edit
                                                 </a>
-                                                <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
+                                                @if(!$user->hasRole('super-admin'))
+                                                    <button class="btn btn-danger btn-sm btn-delete" data-id="{{ $user->id }}">
+                                                        <i class="fas fa-trash"></i> Hapus
+                                                    </button>
+                                                @endif
                                             </td>
                                         </tr>
                                     @endforeach

@@ -93,7 +93,7 @@
                           </tr>
                       </thead>
                       <tbody>
-                          @foreach($transaksiKeluarHariIni as $transaksi)
+                        @forelse($transaksiKeluarHariIni as $transaksi)
                           <tr>
                               <td>{{ $transaksi->barang_kode }}</td>
                               <td>{{ $transaksi->barang->nama }}</td>
@@ -101,7 +101,11 @@
                               <td>{{ number_format($transaksi->harga, 2, ',', '.') }}</td>
                               <td>{{ $transaksi->projek->nama }}</td>
                           </tr>
-                          @endforeach
+                          @empty
+                          <tr>
+                              <td colspan="5" class="text-center">Belum ada barang keluar hari ini</td>
+                          </tr>
+                          @endforelse
                       </tbody>
                   </table>
               </div>
@@ -109,9 +113,9 @@
       </div>
   </div>
 
-  <footer class="text-center mt-4">
-      <p class="text-muted" style="max-width: 50%; margin: 0 auto; word-wrap: break-word; white-space: normal;">{{ $quoteText }}</p>
-      <p class="text-muted" style="max-width: 50%; margin: 0 auto; word-wrap: break-word; white-space: normal; font-style: italic;">{{ $quoteSource }}</p>
+  <footer class="text-center mt-4" style="max-width: 50%; margin: 0 auto; word-wrap: break-word; white-space: normal;">
+      <p class="text-muted">{{ $quoteText }}</p>
+      <p class="text-muted" style="font-style: italic;">{{ $quoteSource }}</p>
   </footer>
 
 </x-layout>
