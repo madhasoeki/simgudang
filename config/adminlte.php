@@ -356,7 +356,7 @@ return [
             'text' => 'Kelola User',
             'url'  => '/kelola-user',
             'icon' => 'fas fa-fw fa-users',
-            'can' => 'super-admin',
+            'role' => 'super-admin',
         ],
     ],
 
@@ -373,7 +373,8 @@ return [
     */
 
     'filters' => [
-        JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
+        // JeroenNoten\LaravelAdminLte\Menu\Filters\GateFilter::class,
+        App\Filters\MyMenuFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\HrefFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\SearchFilter::class,
         JeroenNoten\LaravelAdminLte\Menu\Filters\ActiveFilter::class,
