@@ -7,6 +7,7 @@ use App\Http\Controllers\RekapController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\OpnameController;
 use App\Http\Controllers\ProjekController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransaksiMasukController;
 use App\Http\Controllers\TransaksiKeluarController;
 
@@ -16,9 +17,7 @@ Auth::routes(['register' => false]);
 // Semua route di bawah ini membutuhkan login
 Route::middleware(['auth'])->group(function () {
     // Dashboard
-    Route::get('/', function () {
-        return view('dashboard', ['title' => 'Dashboard']);
-    });
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     // Kelola daftar barang
     Route::prefix('barang')->name('barang.')->group(function () {
