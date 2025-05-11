@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('qty');
             $table->decimal('harga', 15, 2);
             $table->decimal('jumlah', 15, 2);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Add user_id column
             
             $table->foreign('barang_kode')
                   ->references('kode')

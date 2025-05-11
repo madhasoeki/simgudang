@@ -9,6 +9,7 @@ use App\Models\TransaksiMasuk;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiMasukController extends Controller
 {
@@ -76,6 +77,9 @@ class TransaksiMasukController extends Controller
 
             // Hitung jumlah
             $validated['jumlah'] = $validated['qty'] * $validated['harga'];
+
+            // Tambahkan user_id
+            $validated['user_id'] = Auth::id();
 
             // Simpan transaksi
             $transaksi = TransaksiMasuk::create($validated);

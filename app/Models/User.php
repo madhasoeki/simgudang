@@ -46,4 +46,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function transaksiMasuk()
+    {
+        return $this->hasMany(TransaksiMasuk::class, 'user_id');
+    }
+
+    public function transaksiKeluar()
+    {
+        return $this->hasMany(TransaksiKeluar::class, 'user_id');
+    }
+
+    public function approvedOpnames()
+    {
+        return $this->hasMany(Opname::class, 'approved_by');
+    }
 }

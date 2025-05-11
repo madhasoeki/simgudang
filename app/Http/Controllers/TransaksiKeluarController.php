@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use App\Models\TransaksiKeluar;
 use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class TransaksiKeluarController extends Controller
 {
@@ -75,6 +76,9 @@ class TransaksiKeluarController extends Controller
 
             // Hitung jumlah
             $validated['jumlah'] = $validated['qty'] * $validated['harga'];
+
+            // Tambahkan user_id
+            $validated['user_id'] = Auth::id();
 
             // Simpan transaksi
             $transaksi = TransaksiKeluar::create($validated);

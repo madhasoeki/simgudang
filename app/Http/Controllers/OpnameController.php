@@ -8,6 +8,7 @@ use App\Models\Opname;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Auth;
 use Yajra\DataTables\Facades\DataTables;
 
 class OpnameController extends Controller
@@ -92,10 +93,11 @@ class OpnameController extends Controller
             Stok::where('barang_kode', $opname->barang_kode)
                 ->update(['jumlah' => $opname->total_lapangan]);
                 
-            // Update status opname
+            // Tambahkan approved_by
             $opname->update([
                 'approved' => true,
                 'approved_at' => now(),
+                'approved_by' => Auth::id(),
             ]);
         });
         

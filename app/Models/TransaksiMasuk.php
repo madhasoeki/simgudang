@@ -9,7 +9,7 @@ class TransaksiMasuk extends Model
     protected $table = 'transaksi_masuk';
 
     // Mass assignment protection
-    protected $fillable = ['tanggal', 'barang_kode', 'qty', 'harga', 'jumlah'];
+    protected $fillable = ['tanggal', 'barang_kode', 'qty', 'harga', 'jumlah', 'user_id'];
 
     protected $casts = [
         'tanggal' => 'date',
@@ -20,6 +20,11 @@ class TransaksiMasuk extends Model
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barang_kode');
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 
     protected static function booted()

@@ -15,7 +15,8 @@ class TransaksiKeluar extends Model
         'qty',
         'harga',
         'jumlah',
-        'keterangan'
+        'keterangan',
+        'user_id'
     ];
 
     // Casting tipe data
@@ -35,5 +36,10 @@ class TransaksiKeluar extends Model
     public function projek(): BelongsTo
     {
         return $this->belongsTo(Projek::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
     }
 }

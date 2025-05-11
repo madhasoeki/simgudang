@@ -25,6 +25,7 @@ return new class extends Migration
             $table->text('keterangan')->nullable();
             $table->boolean('approved')->default(false);
             $table->timestamp('approved_at')->nullable();
+            $table->foreignId('approved_by')->nullable()->constrained('users')->onDelete('cascade'); // Make approved_by nullable
             $table->timestamps();
     
             $table->foreign('barang_kode')

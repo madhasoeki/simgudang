@@ -23,7 +23,8 @@ class Opname extends Model
         'selisih',
         'keterangan',
         'approved',
-        'approved_at'
+        'approved_at',
+        'approved_by'
     ];
 
     protected $casts = [
@@ -43,5 +44,10 @@ class Opname extends Model
     public function stok()
     {
         return $this->belongsTo(Stok::class, 'barang_kode', 'barang_kode');
+    }
+
+    public function approvedBy()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
     }
 }
