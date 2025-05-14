@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('projek_status', function (Blueprint $table) {
+        Schema::create('tempat_status', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('projek_id')->constrained('projek');
+            $table->foreignId('tempat_id')->constrained('tempat');
             $table->year('tahun');
             $table->tinyInteger('bulan'); // 1-12
             $table->enum('status', ['loading', 'done'])->default('loading');
             $table->integer('total')->default(0);
             $table->timestamps();
-            $table->unique(['projek_id', 'tahun', 'bulan']);
+            $table->unique(['tempat_id', 'tahun', 'bulan']);
         });
     }
 
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('projek_status');
+        Schema::dropIfExists('tempat_status');
     }
 };

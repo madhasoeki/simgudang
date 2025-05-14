@@ -5,8 +5,8 @@ namespace App\Http\Controllers;
 use Carbon\Carbon;
 use App\Models\Stok;
 use App\Models\Barang;
-use App\Models\Projek;
-use App\Models\ProjekStatus;
+use App\Models\Tempat;
+use App\Models\TempatStatus;
 use App\Models\TransaksiMasuk;
 use Illuminate\Http\Request;
 use App\Models\TransaksiKeluar;
@@ -18,7 +18,7 @@ class TransaksiKeluarController extends Controller
 {
     public function index()
     {
-        $transaksi = TransaksiKeluar::with(['barang', 'projek', 'projek.projekStatus'])
+        $transaksi = TransaksiKeluar::with(['barang', 'tempat', 'tempat.tempatStatus'])
             ->latest()
             ->get();
             
@@ -27,7 +27,7 @@ class TransaksiKeluarController extends Controller
 
     public function data(Request $request)
     {
-        $query = TransaksiKeluar::with(['barang', 'projek'])
+        $query = TransaksiKeluar::with(['barang', 'tempat'])
             ->whereBetween('tanggal', [
                 $request->start_date,
                 $request->end_date
@@ -45,7 +45,7 @@ class TransaksiKeluarController extends Controller
                 return $row->barang->satuan;
             })
             ->addColumn('tempat', function($row) {
-                return $row->projek->nama;
+                return $row->tempat->nama;
             })
             ->editColumn('tanggal', function($row) {
                 return $row->tanggal->format('Y-m-d');
@@ -56,16 +56,16 @@ class TransaksiKeluarController extends Controller
 
     public function create()
     {
-        $projek = ProjeK::all();
+        $tempat = Tempat::all();
         $barang = Barang::all();
-        return view('transaksi_keluar.create', compact('projek', 'barang'));
+        return view('transaksi_keluar.create', compact('tempat', 'barang'));
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'tanggal' => 'required|date',
-            'projek_id' => 'required|exists:projek,id',
+            'tempat_id' => 'required|exists:tempat,id',
             'barang_kode' => 'required|exists:barang,kode',
             'qty' => 'required|integer|min:1',
             'harga' => 'required|numeric|min:1',
@@ -90,10 +90,10 @@ class TransaksiKeluarController extends Controller
             Stok::where('barang_kode', $validated['barang_kode'])
                 ->decrement('jumlah', $validated['qty']);
 
-            // Update projek status bulanan
-            ProjekStatus::updateOrCreate(
+            // Update tempat status bulanan
+            TempatStatus::updateOrCreate(
                 [
-                    'projek_id' => $validated['projek_id'],
+                    'tempat_id' => $validated['tempat_id'],
                     'tahun' => date('Y', strtotime($validated['tanggal'])),
                     'bulan' => date('n', strtotime($validated['tanggal']))
                 ],
@@ -114,9 +114,9 @@ class TransaksiKeluarController extends Controller
         }
     }
     
-    public function laporanProjectData(Request $request)
+    public function laporanTempatData(Request $request)
     {
-        if (!$request->projek_id) {
+        if (!$request->tempat_id) {
             return DataTables::of([])->toJson();
         }
     
@@ -124,9 +124,9 @@ class TransaksiKeluarController extends Controller
         $start = Carbon::parse($month)->startOfMonth();
         $end = Carbon::parse($month)->endOfMonth();
     
-        // Query dengan filter projek_id DAN date range
-        $query = TransaksiKeluar::with(['barang', 'projek'])
-            ->where('projek_id', $request->projek_id)
+        // Query dengan filter tempat_id DAN date range
+        $query = TransaksiKeluar::with(['barang', 'tempat'])
+            ->where('tempat_id', $request->tempat_id)
             ->whereBetween('tanggal', [$start, $end]);
 
         return DataTables::of($query)
@@ -140,8 +140,8 @@ class TransaksiKeluarController extends Controller
             ->addColumn('satuan', function ($row) {
                 return $row->barang->satuan ?? '-';
             })
-            ->addColumn('projek_nama', function ($row) {
-                return $row->projek->nama ?? '-';
+            ->addColumn('tempat_nama', function ($row) {
+                return $row->tempat->nama ?? '-';
             })
             ->editColumn('tanggal', function ($row) {
                 return $row->tanggal->format('d/m/Y');

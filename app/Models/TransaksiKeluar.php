@@ -10,7 +10,7 @@ class TransaksiKeluar extends Model
     protected $table = 'transaksi_keluar';
     protected $fillable = [
         'barang_kode',
-        'projek_id',
+        'tempat_id',
         'tanggal',
         'qty',
         'harga',
@@ -32,10 +32,10 @@ class TransaksiKeluar extends Model
         return $this->belongsTo(Barang::class, 'barang_kode', 'kode');
     }
 
-    // Relasi ke projek (satu transaksi dimiliki oleh satu projek)
-    public function projek(): BelongsTo
+    // Relasi ke tempat (satu transaksi dimiliki oleh satu tempat)
+    public function tempat(): BelongsTo
     {
-        return $this->belongsTo(Projek::class);
+        return $this->belongsTo(Tempat::class);
     }
 
     public function user()

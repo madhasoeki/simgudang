@@ -27,16 +27,16 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label>Projek</label>
-                                    <select name="projek_id" class="form-control select2 @error('projek_id') is-invalid @enderror">
-                                        <option value="">Pilih Projek</option>
-                                        @foreach($projek as $item)
-                                            <option value="{{ $item->id }}" {{ old('projek_id') == $item->id ? 'selected' : '' }}>
+                                    <label>Tempat</label>
+                                    <select name="tempat_id" class="form-control select2 @error('tempat_id') is-invalid @enderror">
+                                        <option value="">Pilih Tempat</option>
+                                        @foreach($tempat as $item)
+                                            <option value="{{ $item->id }}" {{ old('tempat_id') == $item->id ? 'selected' : '' }}>
                                                 {{ $item->nama }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('projek_id')
+                                    @error('tempat_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>

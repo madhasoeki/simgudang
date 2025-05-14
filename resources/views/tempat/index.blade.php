@@ -1,30 +1,26 @@
 <x-layout>
-
     <x-slot:title>{{ $title }}</x-slot:title>
-
     <section class="content">
         <div class="container-fluid">
           <div class="row">
             <div class="col-12">
-  
                 <div class="card">
                     <div class="card-body">
                       <table id="tabel" class="table table-bordered table-striped">
                         <thead>
                         <tr>
                             <th>No</th>
-                            <th>Nama Projek</th>
+                            <th>Nama Tempat</th>
                             <th>Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
-                            @foreach($projeks as $index => $projek)
-                                
+                            @foreach($tempats as $index => $tempat)
                                 <tr>
                                     <td>{{ $index + 1 }}</td>
-                                    <td>{{ $projek->nama }}</td>
+                                    <td>{{ $tempat->nama }}</td>
                                     <td>
-                                        <a href="{{ route('projek.edit', $projek->id) }}" class="btn btx-xs btn-warning btn-sm">
+                                        <a href="{{ route('tempat.edit', $tempat->id) }}" class="btn btx-xs btn-warning btn-sm">
                                           <i class="fas fa-edit"></i> Edit
                                         </a>
                                     </td>
@@ -33,17 +29,11 @@
                         </tbody>
                       </table>
                     </div>
-                    <!-- /.card-body -->
                   </div>
-              <!-- /.card -->
-            </div>
-            <!-- /.col -->
+              </div>
           </div>
-          <!-- /.row -->
         </div>
-        <!-- /.container-fluid -->
       </section>
-
       <x-slot:script>
         <script>
             $(function () {
@@ -61,7 +51,7 @@
                 "ordering": false,
                 "info": false,
                 "language": {
-                  "emptyTable": "Belum ada projek"
+                  "emptyTable": "Belum ada tempat"
                 },
                 "columnDefs": [
                   { "width": "20px", "targets": [0] },
@@ -69,21 +59,15 @@
                 ],
                 "buttons": [
                   {
-                    "text": '<i class="fas fa-plus"></i> Tambah Projek',
+                    "text": '<i class="fas fa-plus"></i> Tambah Tempat',
                     action: function (e, dt, node, config) {
-                      // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
-                      window.location.href = "{{ route('projek.create') }}";
+                      window.location.href = "{{ route('tempat.create') }}";
                     }
                   },
                 ]
               });
-
-              // Tempatkan tombol ke posisi kiri atas
               table.buttons().container().appendTo('#tabel_wrapper .col-md-6:eq(0)');
             });
         </script>
       </x-slot:script>
-
 </x-layout>
-
-

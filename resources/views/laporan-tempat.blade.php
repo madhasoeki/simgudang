@@ -19,8 +19,8 @@
       </div>
       <div class="card-body">
 
-        <select id="projectFilter" class="form-control mb-2" style="width: 200px;">
-          <option value="">--- Pilih Project ---</option>
+        <select id="tempatFilter" class="form-control mb-2" style="width: 200px;">
+          <option value="">--- Pilih Tempat ---</option>
         </select>
         
         <table id="tabel" class="table table-bordered table-striped">
@@ -35,7 +35,7 @@
               <th>Harga</th>
               <th>Keterangan</th>
               <th>Jumlah</th>
-              <th>Project</th>
+              <th>Tempat</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -59,18 +59,18 @@
     <script>
 
       $(document).ready(function () {
-          // Load data projek ke dropdown
+          // Load data tempat ke dropdown
           $.ajax({
-              url: "{{ route('projek.list') }}",
+              url: "{{ route('tempat.list') }}",
               method: 'GET',
               success: function(data) {
-                  const projectFilter = $('#projectFilter');
-                  data.forEach(function(projek) {
-                      projectFilter.append(`<option value="${projek.id}">${projek.nama}</option>`);
+                  const tempatFilter = $('#tempatFilter');
+                  data.forEach(function(tempat) {
+                      tempatFilter.append(`<option value="${tempat.id}">${tempat.nama}</option>`);
                   });
               },
               error: function(xhr) {
-                  console.error('Gagal memuat data projek:', xhr.responseText);
+                  console.error('Gagal memuat data tempat:', xhr.responseText);
               }
           });
       });
@@ -106,7 +106,7 @@
             }, function(start, end) {
                 currentMonth = start.format('YYYY-MM');
                 $('#monthPicker span').html(start.format('MMMM YYYY'));
-                if ($('#projectFilter').val()) {
+                if ($('#tempatFilter').val()) {
                     table.ajax.reload();
                 }
             });
@@ -127,10 +127,10 @@
             processing: true,
             serverSide: true,
             ajax: {
-                url: "{{ route('laporan-project.data') }}",
+                url: "{{ route('laporan-tempat.data') }}",
                 data: function(d) {
                     d.month = currentMonth;
-                    d.projek_id = $('#projectFilter').val();
+                    d.tempat_id = $('#tempatFilter').val();
                 }
             },
             columns: [
@@ -144,7 +144,7 @@
               { data: 'harga', name: 'harga' },
               { data: 'keterangan', name: 'keterangan' },
               { data: 'jumlah', name: 'jumlah' },
-              { data: 'projek_nama', name: 'projek.nama' }
+              { data: 'tempat_nama', name: 'tempat.nama' }
             ],
             dom: '<"d-flex justify-content-between align-items-center"Bf>rtip',
             buttons: [
@@ -152,7 +152,7 @@
                     extend: 'excel',
                     text: '<i class="fa-solid fa-download"></i> Export',
                     className: 'btn btn-success btn-sm',
-                    title: "Laporan Project",
+                    title: "Laporan Tempat",
                     messageTop: function() {
                         const startDate = $('#monthPicker').data('daterangepicker').startDate.format('DD MMMM YYYY');
                         const endDate = $('#monthPicker').data('daterangepicker').endDate.format('DD MMMM YYYY');
@@ -166,7 +166,7 @@
             ordering: false,
             info: false,
             language: {
-              emptyTable: "Silahkan pilih projek untuk menampilkan data",
+              emptyTable: "Silahkan pilih tempat untuk menampilkan data",
               zeroRecords: "Tidak ada data yang cocok"
             },
             footerCallback: function(row, data, start, end, display) {
@@ -179,8 +179,8 @@
 
         });
 
-        // Reload data tabel saat filter projek berubah
-        $('#projectFilter').change(function () {
+        // Reload data tabel saat filter tempat berubah
+        $('#tempatFilter').change(function () {
             table.ajax.reload();
         });
       });

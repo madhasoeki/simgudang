@@ -82,7 +82,7 @@
                         { "width": '20px', "targets": 4 },
                     ],
                     "ajax": {
-                        "url": "/rekap-projek/data",
+                        "url": "/rekap-tempat/data",
                         "data": function(d) {
                             d.start_date = startDate.format('YYYY-MM-DD');
                         }
@@ -107,7 +107,7 @@
                         },
                         { 
                             "data": "nama",
-                            "name": "projek.nama" // Untuk sorting/filter server-side
+                            "name": "tempat.nama" // Untuk sorting/filter server-side
                         },
                         { 
                             "data": "status",
@@ -215,7 +215,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             $.ajax({
-                                url: `/rekap-projek/${id}/status`,
+                                url: `/rekap-tempat/${id}/status`,
                                 method: 'PUT',
                                 data: {
                                     _token: '{{ csrf_token() }}',

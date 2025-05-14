@@ -310,8 +310,8 @@ return [
             'icon' => 'fas fa-box-open',
         ],
         [
-            'text' => 'Projek',
-            'url' => '/projek',
+            'text' => 'Tempat',
+            'url' => '/tempat',
             'icon' => 'fas fa-columns',
         ],
         [
@@ -336,19 +336,19 @@ return [
             'submenu' => [
                 [
                     'text' => 'Stock Opname',
-                    'url' => '/opname', // Ganti dari stock-opname ke opname
+                    'url' => '/opname',
                 ],
                 [
                     'text' => 'Data Miss',
-                    'url' => '/opname/miss', // Tambahkan menu untuk Data Miss
+                    'url' => '/opname/miss',
                 ],
                 [
-                    'text' => 'Laporan Project',
-                    'url' => '/laporan-project',
+                    'text' => 'Laporan Tempat',
+                    'url' => '/laporan-tempat',
                 ],
                 [
                     'text' => 'Rekap Barang',
-                    'url' => '/rekap-projek',
+                    'url' => '/rekap-tempat',
                 ],
             ],
         ],

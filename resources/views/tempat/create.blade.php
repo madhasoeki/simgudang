@@ -1,16 +1,14 @@
 <x-layout>
-    <x-slot:title>Tambah Nama Projek</x-slot:title>
-
+    <x-slot:title>Tambah Nama Tempat</x-slot:title>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Form Tambah Projek</h3>
+                            <h3 class="card-title">Form Tambah Tempat</h3>
                         </div>
-
-                        <form action="{{ route('projek.store') }}" method="POST">
+                        <form action="{{ route('tempat.store') }}" method="POST">
                             @csrf
                             <div class="card-body">
                                 @if(session('success'))
@@ -18,7 +16,6 @@
                                         {{ session('success') }}
                                     </div>
                                 @endif
-
                                 @if($errors->any())
                                     <div class="alert alert-danger">
                                         <ul class="mb-0">
@@ -28,9 +25,8 @@
                                         </ul>
                                     </div>
                                 @endif
-
                                 <div class="form-group">
-                                    <label>Nama Projek</label>
+                                    <label>Nama Tempat</label>
                                     <input type="text" name="nama"
                                            class="form-control @error('nama') is-invalid @enderror"
                                            value="{{ old('nama') }}" required>
@@ -39,7 +35,6 @@
                                     @enderror
                                 </div>
                             </div>
-
                             <div class="card-footer">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> Simpan

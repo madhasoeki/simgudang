@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Projek;
-use App\Models\ProjekStatus;
+use App\Models\Tempat;
+use App\Models\TempatStatus;
 use Illuminate\Http\Request;
 use Yajra\DataTables\Facades\DataTables;
 
@@ -12,13 +12,13 @@ class RekapController extends Controller
     public function index()
     {
         return view('rekap-barang-keluar', [
-            'title' => 'Rekap Status Projek',
+            'title' => 'Rekap Status Tempat',
         ]);
     }
     public function data(Request $request)
     {
-        $query = ProjekStatus::join('projek', 'projek_status.projek_id', '=', 'projek.id')
-            ->select('projek_status.*', 'projek.nama');
+        $query = TempatStatus::join('tempat', 'tempat_status.tempat_id', '=', 'tempat.id')
+            ->select('tempat_status.*', 'tempat.nama');
 
         // Filter berdasarkan bulan dan tahun
         if ($request->has('start_date') && $request->start_date) {
@@ -26,8 +26,8 @@ class RekapController extends Controller
             $year = date('Y', strtotime($request->start_date)); // Ambil tahun
             
             $query->where([
-                'projek_status.bulan' => $month,
-                'projek_status.tahun' => $year
+                'tempat_status.bulan' => $month,
+                'tempat_status.tahun' => $year
             ]);
         }
 
@@ -40,7 +40,7 @@ class RekapController extends Controller
                 // Handle server-side search
                 if ($request->has('search') && !empty($request->search['value'])) {
                     $search = $request->search['value'];
-                    $query->where('projek.nama', 'like', "%{$search}%");
+                    $query->where('tempat.nama', 'like', "%{$search}%");
                 }
             })
             ->toJson();
@@ -49,7 +49,7 @@ class RekapController extends Controller
     public function updateStatus($id, Request $request)
     {
         try {
-            $status = ProjekStatus::findOrFail($id);
+            $status = TempatStatus::findOrFail($id);
             $status->update([
                 'status' => $request->status
             ]);
