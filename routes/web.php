@@ -52,6 +52,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/data', [TransaksiKeluarController::class, 'data'])->name('data');
         Route::get('/create', [TransaksiKeluarController::class, 'create'])->name('create');
         Route::post('/', [TransaksiKeluarController::class, 'store'])->name('store');
+        Route::get('/harga-barang', [TransaksiKeluarController::class, 'hargaBarang'])->name('harga-barang');
     });
 
     // Grouping routes for Opname with prefix and name

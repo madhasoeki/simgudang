@@ -7,6 +7,7 @@ use App\Models\Stok;
 use App\Models\Barang;
 use App\Models\Projek;
 use App\Models\ProjekStatus;
+use App\Models\TransaksiMasuk;
 use Illuminate\Http\Request;
 use App\Models\TransaksiKeluar;
 use Illuminate\Support\Facades\DB;
@@ -74,8 +75,10 @@ class TransaksiKeluarController extends Controller
         try {
             DB::beginTransaction();
 
-            // Hitung jumlah
-            $validated['jumlah'] = $validated['qty'] * $validated['harga'];
+            // Pastikan harga integer
+            $validated['harga'] = (int) $validated['harga'];
+            // Hitung jumlah juga integer
+            $validated['jumlah'] = (int) ($validated['qty'] * $validated['harga']);
 
             // Tambahkan user_id
             $validated['user_id'] = Auth::id();
@@ -151,5 +154,18 @@ class TransaksiKeluarController extends Controller
             })
             ->rawColumns([])
             ->toJson();
+    }
+
+    public function hargaBarang(Request $request)
+    {
+        $barang_kode = $request->barang_kode;
+        $hargaList = TransaksiMasuk::where('barang_kode', $barang_kode)
+            ->select('harga')
+            ->distinct()
+            ->orderByDesc('harga')
+            ->pluck('harga')
+            ->toArray();
+
+        return response()->json($hargaList);
     }
 }

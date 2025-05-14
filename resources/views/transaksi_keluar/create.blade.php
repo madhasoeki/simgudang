@@ -1,6 +1,10 @@
 <x-layout>
     <x-slot:title>Input Barang Keluar</x-slot:title>
 
+    <x-slot:style>
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    </x-slot:style>
+
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -67,9 +71,11 @@
                                     <div class="col-md-6">
                                         <div class="form-group">
                                             <label>Harga Satuan</label>
-                                            <input type="number" name="harga" 
-                                                   class="form-control @error('harga') is-invalid @enderror"
-                                                   value="{{ old('harga') }}">
+                                            <select name="harga" id="harga-select"
+                                                    class="form-control @error('harga') is-invalid @enderror">
+                                                <option value="">Pilih Harga</option>
+                                                {{-- Harga akan diisi via JS --}}
+                                            </select>
                                             @error('harga')
                                                 <div class="invalid-feedback">{{ $message }}</div>
                                             @enderror
@@ -98,10 +104,40 @@
     </section>
 
     <x-slot:script>
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+        
         <script>
             $(document).ready(function() {
                 $('.select2').select2({
                     theme: 'bootstrap4'
+                });
+
+                // Saat barang dipilih, ambil harga dari server
+                $('select[name="barang_kode"]').on('change', function() {
+                    var barangKode = $(this).val();
+                    var hargaSelect = $('#harga-select');
+                    hargaSelect.html('<option value="">Memuat harga...</option>');
+                    if (barangKode) {
+                        $.get(
+                            // URL endpoint untuk mendapatkan harga berdasarkan barang
+                            '{{ route('transaksi-keluar.harga-barang') }}?barang_kode=' + barangKode,
+                            function(data) {
+                                hargaSelect.empty();
+                                if (data.length > 0) {
+                                    $.each(data, function(key, value) {
+                                        var formatted = 'Rp' + parseInt(value).toLocaleString('id-ID');
+                                        hargaSelect.append('<option value="' + value + '">' + formatted + '</option>');
+                                    });
+                                    // Pilih harga tertinggi secara otomatis
+                                    hargaSelect.val(Math.max.apply(Math, data));
+                                } else {
+                                    hargaSelect.html('<option value="">Harga tidak tersedia</option>');
+                                }
+                            }
+                        );
+                    } else {
+                        hargaSelect.html('<option value="">Pilih Harga</option>');
+                    }
                 });
             });
         </script>

@@ -17,7 +17,7 @@ return new class extends Migration
             $table->year('tahun');
             $table->tinyInteger('bulan'); // 1-12
             $table->enum('status', ['loading', 'done'])->default('loading');
-            $table->decimal('total', 15, 2)->default(0);
+            $table->integer('total')->default(0);
             $table->timestamps();
             $table->unique(['projek_id', 'tahun', 'bulan']);
         });

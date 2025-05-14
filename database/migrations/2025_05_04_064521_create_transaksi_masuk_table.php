@@ -16,8 +16,8 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('barang_kode', 10);
             $table->integer('qty');
-            $table->decimal('harga', 15, 2);
-            $table->decimal('jumlah', 15, 2);
+            $table->integer('harga');
+            $table->integer('jumlah');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Add user_id column
             
             $table->foreign('barang_kode')

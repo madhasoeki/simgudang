@@ -75,8 +75,10 @@ class TransaksiMasukController extends Controller
         try {
             DB::beginTransaction();
 
-            // Hitung jumlah
-            $validated['jumlah'] = $validated['qty'] * $validated['harga'];
+            // Pastikan harga integer
+            $validated['harga'] = (int) $validated['harga'];
+            // Hitung jumlah juga integer
+            $validated['jumlah'] = (int) ($validated['qty'] * $validated['harga']);
 
             // Tambahkan user_id
             $validated['user_id'] = Auth::id();
