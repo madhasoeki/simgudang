@@ -23,6 +23,11 @@
                                         <a href="{{ route('tempat.edit', $tempat->id) }}" class="btn btx-xs btn-warning btn-sm">
                                           <i class="fas fa-edit"></i> Edit
                                         </a>
+                                        <form action="{{ route('tempat.destroy', $tempat->id) }}" method="POST" style="display:inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="button" class="btn btn-danger btn-sm btn-delete-tempat"><i class="fas fa-trash"></i> Hapus</button>
+                                        </form>
                                     </td>
                                 </tr>
                             @endforeach
@@ -35,6 +40,7 @@
         </div>
       </section>
       <x-slot:script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(function () {
               $.extend(true, $.fn.dataTable.Buttons.defaults, {
@@ -51,7 +57,8 @@
                 "ordering": false,
                 "info": false,
                 "language": {
-                  "emptyTable": "Belum ada tempat"
+                  "emptyTable": "Belum ada tempat",
+                  "zeroRecords": "Tidak ada data yang ditemukan",
                 },
                 "columnDefs": [
                   { "width": "20px", "targets": [0] },
@@ -67,6 +74,26 @@
                 ]
               });
               table.buttons().container().appendTo('#tabel_wrapper .col-md-6:eq(0)');
+
+              // SweetAlert untuk hapus tempat
+              $('#tabel').on('click', '.btn-delete-tempat', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+                Swal.fire({
+                  title: 'Yakin ingin menghapus tempat ini?',
+                  text: "Data yang dihapus tidak dapat dikembalikan!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: 'Ya, hapus!',
+                  cancelButtonText: 'Batal'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    form.submit();
+                  }
+                });
+              });
             });
         </script>
       </x-slot:script>

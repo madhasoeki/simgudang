@@ -32,8 +32,10 @@ class TransaksiMasukController extends Controller
         $startDate = $request->start_date;
         $endDate = $request->end_date;
 
-        $query = TransaksiMasuk::with('barang')
-            ->whereBetween('tanggal', [$startDate, $endDate]);
+        $query = TransaksiMasuk::with(['barang' => function($q) {
+            $q->withTrashed();
+        }])
+        ->whereBetween('tanggal', [$startDate, $endDate]);
 
         return DataTables::of($query)
         ->addIndexColumn()
@@ -42,10 +44,10 @@ class TransaksiMasukController extends Controller
             return $row->barang_kode; // Kolom yang sebenarnya ada di database
         })
         ->addColumn('nama_barang', function($row) {
-            return $row->barang->nama;
+            return $row->barang->nama ?? '-';
         })
         ->addColumn('satuan', function($row) {
-            return $row->barang->satuan;
+            return $row->barang->satuan ?? '-';
         })
         ->editColumn('harga', function($row) {
             return $row->harga;

@@ -66,6 +66,7 @@
     </section>
 
     <x-slot:script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(document).ready(function () {
                 const table = $('#tabel-users').DataTable({
@@ -79,7 +80,7 @@
                 });
 
                 // SweetAlert for delete confirmation
-                $('.btn-delete').on('click', function () {
+                $('#tabel-users').on('click', '.btn-delete', function () {
                     const userId = $(this).data('id');
                     Swal.fire({
                         title: 'Yakin ingin menghapus user ini?',

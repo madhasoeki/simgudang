@@ -58,7 +58,7 @@
                           @forelse($transaksiMasukHariIni as $transaksi)
                           <tr>
                               <td>{{ $transaksi->barang_kode }}</td>
-                              <td>{{ $transaksi->barang->nama }}</td>
+                              <td>{{ $transaksi->barang->nama ?? '-' }}</td>
                               <td>{{ $transaksi->qty }}</td>
                               <td>{{ number_format($transaksi->harga, 2, ',', '.') }}</td>
                           </tr>
@@ -89,17 +89,17 @@
                               <th>Nama Barang</th>
                               <th>Jumlah</th>
                               <th>Harga</th>
-                              <th>Nama Projek</th>
+                              <th>Tempat</th>
                           </tr>
                       </thead>
                       <tbody>
                         @forelse($transaksiKeluarHariIni as $transaksi)
                           <tr>
                               <td>{{ $transaksi->barang_kode }}</td>
-                              <td>{{ $transaksi->barang->nama }}</td>
+                              <td>{{ $transaksi->barang->nama ?? '-' }}</td>
                               <td>{{ $transaksi->qty }}</td>
                               <td>{{ number_format($transaksi->harga, 2, ',', '.') }}</td>
-                              <td>{{ $transaksi->projek->nama }}</td>
+                              <td>{{ $transaksi->projek->nama ?? '-' }}</td>
                           </tr>
                           @empty
                           <tr>

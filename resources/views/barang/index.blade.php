@@ -29,6 +29,11 @@
                                               <a href="{{ route('barang.edit', $barang->kode) }}" class="btn btn-warning btn-sm">
                                                   <i class="fas fa-edit"></i> Edit
                                               </a>
+                                              <form action="{{ route('barang.destroy', $barang->kode) }}" method="POST" style="display:inline-block">
+                                                  @csrf
+                                                  @method('DELETE')
+                                                  <button type="button" class="btn btn-danger btn-sm btn-delete-barang"><i class="fas fa-trash"></i> Hapus</button>
+                                              </form>
                                           </td>
                                       </tr>
                                   @endforeach
@@ -42,6 +47,7 @@
   </section>
 
       <x-slot:script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <script>
             $(function () {
               $.extend(true, $.fn.dataTable.Buttons.defaults, {
@@ -69,15 +75,33 @@
                   {
                     "text": '<i class="fas fa-plus"></i> Tambah Data Barang',
                     action: function (e, dt, node, config) {
-                      // Ganti ini sesuai kebutuhan, bisa buka modal atau redirect
                       window.location.href = "{{ route('barang.create') }}";
                     }
                   },
                 ]
               });
 
-              // Tempatkan tombol ke posisi kiri atas
               table.buttons().container().appendTo('#tabel_wrapper .col-md-6:eq(0)');
+
+              // SweetAlert untuk hapus
+              $('#tabel').on('click', '.btn-delete-barang', function(e) {
+                e.preventDefault();
+                const form = $(this).closest('form');
+                Swal.fire({
+                  title: 'Yakin ingin menghapus barang ini?',
+                  text: "Data yang dihapus tidak dapat dikembalikan!",
+                  icon: 'warning',
+                  showCancelButton: true,
+                  confirmButtonColor: '#d33',
+                  cancelButtonColor: '#3085d6',
+                  confirmButtonText: 'Ya, hapus!',
+                  cancelButtonText: 'Batal'
+                }).then((result) => {
+                  if (result.isConfirmed) {
+                    form.submit();
+                  }
+                });
+              });
             });
         </script>
       </x-slot:script>

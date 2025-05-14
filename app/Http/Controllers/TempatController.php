@@ -64,6 +64,14 @@ class TempatController extends Controller
         return redirect()->route('tempat.index')->with('success', 'Tempat berhasil diperbarui!');
     }
 
+    // Menghapus tempat (soft delete)
+    public function destroy($id)
+    {
+        $tempat = Tempat::findOrFail($id);
+        $tempat->delete();
+        return redirect()->route('tempat.index')->with('success', 'Tempat berhasil dihapus.');
+    }
+
     public function list()
     {
         $tempat = Tempat::orderBy('nama', 'asc')->get(['id', 'nama']);

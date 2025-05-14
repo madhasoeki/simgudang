@@ -74,4 +74,12 @@ class BarangController extends Controller
         // Redirect setelah berhasil update
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
+
+    // Menghapus barang (soft delete)
+    public function destroy($kode)
+    {
+        $barang = Barang::findOrFail($kode);
+        $barang->delete();
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus.');
+    }
 }

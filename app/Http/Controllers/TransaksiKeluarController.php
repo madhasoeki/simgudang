@@ -27,25 +27,32 @@ class TransaksiKeluarController extends Controller
 
     public function data(Request $request)
     {
-        $query = TransaksiKeluar::with(['barang', 'tempat'])
-            ->whereBetween('tanggal', [
-                $request->start_date,
-                $request->end_date
-            ]);
+        $query = TransaksiKeluar::with([
+            'barang' => function($q) {
+                $q->withTrashed();
+            },
+            'tempat' => function($q) {
+                $q->withTrashed();
+            }
+        ])
+        ->whereBetween('tanggal', [
+            $request->start_date,
+            $request->end_date
+        ]);
 
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('kode', function($row) {
-                return $row->barang->kode;
+                return $row->barang->kode ?? '-';
             })
             ->addColumn('nama_barang', function($row) {
-                return $row->barang->nama;
+                return $row->barang->nama ?? '-';
             })
             ->addColumn('satuan', function($row) {
-                return $row->barang->satuan;
+                return $row->barang->satuan ?? '-';
             })
             ->addColumn('tempat', function($row) {
-                return $row->tempat->nama;
+                return $row->tempat->nama ?? '-';
             })
             ->editColumn('tanggal', function($row) {
                 return $row->tanggal->format('Y-m-d');
@@ -132,16 +139,16 @@ class TransaksiKeluarController extends Controller
         return DataTables::of($query)
             ->addIndexColumn()
             ->addColumn('kode', function ($row) {
-                return $row->barang->kode ?? '-';
+                return $row->barang->kode;
             })
             ->addColumn('nama_barang', function ($row) {
-                return $row->barang->nama ?? '-';
+                return $row->barang->nama;
             })
             ->addColumn('satuan', function ($row) {
-                return $row->barang->satuan ?? '-';
+                return $row->barang->satuan;
             })
             ->addColumn('tempat_nama', function ($row) {
-                return $row->tempat->nama ?? '-';
+                return $row->tempat->nama;
             })
             ->editColumn('tanggal', function ($row) {
                 return $row->tanggal->format('d/m/Y');

@@ -39,7 +39,9 @@ class OpnameController extends Controller
         $year = date('Y', strtotime($month));
         $monthNumber = date('m', strtotime($month));
 
-        $query = Opname::with(['barang'])
+        $query = Opname::with(['barang' => function($q) {
+            $q->withTrashed();
+        }])
             ->whereYear('periode_awal', $year)
             ->whereMonth('periode_awal', $monthNumber)
             ->select('opname.*');
@@ -60,7 +62,7 @@ class OpnameController extends Controller
 
     public function showInputForm($id)
     {
-        $opname = Opname::with('barang')->findOrFail($id);
+        $opname = Opname::with(['barang' => function($q) { $q->withTrashed(); }])->findOrFail($id);
         return view('opname.input-lapangan', [
             'title' => 'Input Stok Lapangan',
             'opname' => $opname
@@ -119,7 +121,9 @@ class OpnameController extends Controller
         $start = Carbon::parse($month)->startOfMonth();
         $end = Carbon::parse($month)->endOfMonth();
 
-        $query = Opname::with('barang')
+        $query = Opname::with(['barang' => function($q) {
+            $q->withTrashed();
+        }])
             ->where('selisih', '!=', 0) // Filter hanya data dengan selisih tidak sama dengan 0
             ->whereBetween('periode_awal', [$start, $end]) // Filter berdasarkan periode
             ->select('opname.*');

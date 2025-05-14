@@ -26,10 +26,15 @@ class DashboardController extends Controller
         })->get();
 
         // Transaksi masuk hari ini
-        $transaksiMasukHariIni = TransaksiMasuk::whereDate('tanggal', today())->get();
+        $transaksiMasukHariIni = TransaksiMasuk::with(['barang' => function($q) {
+            $q->withTrashed();
+        }])->whereDate('tanggal', today())->get();
 
         // Transaksi keluar hari ini
-        $transaksiKeluarHariIni = TransaksiKeluar::whereDate('tanggal', today())->get();
+        $transaksiKeluarHariIni = TransaksiKeluar::with([
+            'barang' => function($q) { $q->withTrashed(); },
+            'tempat' => function($q) { $q->withTrashed(); }
+        ])->whereDate('tanggal', today())->get();
 
         // Load quotes from JSON file
         $quotes = json_decode(file_get_contents(resource_path('quotes.json')), true);

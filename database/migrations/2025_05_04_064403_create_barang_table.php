@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('nama', 100);
             $table->string('satuan', 20); // SAK, BUAH, dll
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

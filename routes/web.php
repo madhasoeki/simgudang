@@ -26,6 +26,7 @@ Route::middleware(['auth'])->group(function () {
         Route::post('/', [BarangController::class, 'store'])->name('store');
         Route::get('/{kode}/edit', [BarangController::class, 'edit'])->name('edit');
         Route::put('/{kode}', [BarangController::class, 'update'])->name('update');
+        Route::delete('/{kode}', [BarangController::class, 'destroy'])->name('destroy');
     });
 
     // Kelola daftar tempat
@@ -36,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/{id}/edit', [TempatController::class, 'edit'])->name('edit');
         Route::put('/{id}', [TempatController::class, 'update'])->name('update');
         Route::get('/list', [TempatController::class, 'list'])->name('list');
+        Route::delete('/{id}', [TempatController::class, 'destroy'])->name('destroy');
     });
 
     // Transaksi masuk
@@ -83,9 +85,10 @@ Route::middleware(['auth'])->group(function () {
     // Grouping routes for User Management with middleware and prefix
     Route::middleware(['role:super-admin'])->prefix('users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
-        Route::resource('/', UserController::class)->except(['show']);
+        Route::resource('', UserController::class)->except(['show']);
         Route::post('/{user}/change-password', [UserController::class, 'changePassword'])->name('change-password');
         Route::get('/{user}/edit', [UserController::class, 'edit'])->name('edit');
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
 });
