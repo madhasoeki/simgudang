@@ -93,4 +93,6 @@ Route::middleware(['auth'])->group(function () {
         Route::put('/{user}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
     });
+    // History log (super admin only)
+    Route::middleware(['role:super-admin'])->get('/history', [\App\Http\Controllers\HistoryController::class, 'index'])->name('history.index');
 });

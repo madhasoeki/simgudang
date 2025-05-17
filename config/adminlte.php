@@ -358,6 +358,13 @@ return [
             'icon' => 'fas fa-fw fa-users',
             'role' => 'super-admin',
         ],
+        
+        [
+            'text' => 'History Log',
+            'url'  => '/history',
+            'icon' => 'fas fa-history',
+            'role' => 'super-admin',
+        ],
     ],
 
     /*

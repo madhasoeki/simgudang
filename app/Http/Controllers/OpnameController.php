@@ -78,12 +78,22 @@ class OpnameController extends Controller
         ]);
 
         $opname = Opname::findOrFail($id);
+        $old = $opname->replicate();
         $opname->update([
             'total_lapangan' => $request->total_lapangan,
             'selisih' => $request->total_lapangan - $opname->stock_total,
             'keterangan' => $request->keterangan
         ]);
-
+        // Log manual ke history hanya untuk input data lapangan
+        \App\Models\History::create([
+            'user_id' => Auth::id(),
+            'table_name' => 'opname',
+            'record_id' => $opname->id,
+            'action' => 'lapangan',
+            'old_values' => $old->toArray(),
+            'new_values' => $opname->toArray(),
+            'created_at' => now(),
+        ]);
         return redirect()->route('opname.index')->with('success', 'Data lapangan berhasil disimpan!');
     }
 
@@ -95,6 +105,7 @@ class OpnameController extends Controller
         }
         DB::transaction(function () use ($id, $request) {
             $opname = Opname::findOrFail($id);
+            $old = $opname->replicate();
             // Update stok
             Stok::where('barang_kode', $opname->barang_kode)
                 ->update(['jumlah' => $opname->total_lapangan]);
@@ -103,6 +114,16 @@ class OpnameController extends Controller
                 'approved' => true,
                 'approved_at' => now(),
                 'approved_by' => Auth::id(),
+            ]);
+            // Log manual ke history (aksi approve)
+            \App\Models\History::create([
+                'user_id' => Auth::id(),
+                'table_name' => 'opname',
+                'record_id' => $opname->id,
+                'action' => 'approved',
+                'old_values' => $old->toArray(),
+                'new_values' => $opname->toArray(),
+                'created_at' => now(),
             ]);
         });
         return response()->json(['success' => true]);
