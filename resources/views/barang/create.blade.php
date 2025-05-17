@@ -35,6 +35,9 @@
                     <option value="KG">KG</option>
                     <option value="METER">METER</option>
                     <option value="LITER">LITER</option>
+                    <option value="LITER">LBR</option>
+                    <option value="LITER">BTG</option>
+                    <option value="LITER">KTK</option>
                 </select>
                 @error('satuan')
                     <div class="invalid-feedback">{{ $message }}</div>

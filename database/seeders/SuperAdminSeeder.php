@@ -14,7 +14,7 @@ class SuperAdminSeeder extends Seeder
             ['email' => 'superadmin@example.com'], // Ganti dengan email yang Anda inginkan
             [
                 'name' => 'Super Admin',
-                'password' => bcrypt('password123'), // Ganti dengan password yang Anda inginkan
+                'password' => bcrypt('password'), // Ganti dengan password yang Anda inginkan
             ]
         );
 

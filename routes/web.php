@@ -61,7 +61,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('opname')->name('opname.')->group(function () {
         Route::get('/', [OpnameController::class, 'index'])->name('index');
         Route::get('/data', [OpnameController::class, 'data'])->name('data');
-        Route::post('/{id}/approve', [OpnameController::class, 'approve'])->name('approve');
+        Route::post('/{id}/approve', [OpnameController::class, 'approve'])
+            ->middleware('role:super-admin')
+            ->name('approve');
         Route::get('/{id}/input-lapangan', [OpnameController::class, 'showInputForm'])->name('input-form');
         Route::put('/{id}/simpan-lapangan', [OpnameController::class, 'simpanLapangan'])->name('simpan-lapangan');
         Route::get('/miss', [OpnameController::class, 'missIndex'])->name('miss.index');

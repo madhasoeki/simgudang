@@ -52,6 +52,7 @@
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
   
         <script>
+        const isSuperAdmin = @json($isSuperAdmin);
           $(function () {
             // Inisialisasi datepicker
             const initDatePicker = () => {
@@ -133,6 +134,18 @@
                         className: 'text-center',
                         render: function(data, type, row) {
                             const inputFormUrl = "{{ route('opname.input-form', ':id') }}".replace(':id', data);
+                            let approveBtn = '';
+                            if (!row.approved && isSuperAdmin) {
+                                approveBtn = `
+                                    <button class="btn btn-sm btn-success btn-approve" 
+                                            data-id="${data}"
+                                            title="Approve">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                `;
+                            } else if (row.approved) {
+                                approveBtn = '<span class="text-success"><i class="fas fa-check-circle"></i> Approved</span>';
+                            }
                             return `
                                 <div class="btn-action-group">
                                     ${!row.approved ? `
@@ -142,14 +155,7 @@
                                         <i class="fas fa-clipboard-check"></i> Input Lapangan
                                     </a>
                                     ` : ''}
-                                    
-                                    ${!row.approved ? `
-                                    <button class="btn btn-sm btn-success btn-approve" 
-                                            data-id="${data}"
-                                            title="Approve">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                    ` : '<span class="text-success"><i class="fas fa-check-circle"></i> Approved</span>'}
+                                    ${approveBtn}
                                 </div>
                             `;
                         }

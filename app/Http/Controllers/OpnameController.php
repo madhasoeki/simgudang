@@ -22,7 +22,8 @@ class OpnameController extends Controller
 
         return view('opname.index', [
             'title' => 'Stock Opname',
-            'currentMonth' => $month
+            'currentMonth' => $month,
+            'isSuperAdmin' => Auth::user() && Auth::user()->hasRole('super-admin'),
         ]);
     }
 
@@ -88,13 +89,15 @@ class OpnameController extends Controller
 
     public function approve($id, Request $request)
     {
+        // Batasi hanya super-admin
+        if (!Auth::user() || !Auth::user()->hasRole('super-admin')) {
+            abort(403, 'Unauthorized');
+        }
         DB::transaction(function () use ($id, $request) {
             $opname = Opname::findOrFail($id);
-            
             // Update stok
             Stok::where('barang_kode', $opname->barang_kode)
                 ->update(['jumlah' => $opname->total_lapangan]);
-                
             // Tambahkan approved_by
             $opname->update([
                 'approved' => true,
@@ -102,7 +105,6 @@ class OpnameController extends Controller
                 'approved_by' => Auth::id(),
             ]);
         });
-        
         return response()->json(['success' => true]);
     }
 
