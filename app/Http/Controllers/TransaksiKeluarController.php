@@ -14,8 +14,75 @@ use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 
+
 class TransaksiKeluarController extends Controller
 {
+
+    // edit, update, destroy sudah di atas, hapus duplikasi
+
+    public function edit($id)
+    {
+        $transaksi = TransaksiKeluar::findOrFail($id);
+        $tempat = Tempat::all();
+        $barang = Barang::all();
+        return view('transaksi_keluar.edit', compact('transaksi', 'tempat', 'barang'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validated = $request->validate([
+            'tanggal' => 'required|date',
+            'tempat_id' => 'required|exists:tempat,id',
+            'barang_kode' => 'required|exists:barang,kode',
+            'qty' => 'required|integer|min:1',
+            'harga' => 'required|numeric|min:1',
+            'keterangan' => 'nullable|string'
+        ]);
+
+        try {
+            DB::beginTransaction();
+
+            $validated['harga'] = (int) $validated['harga'];
+            $validated['jumlah'] = (int) ($validated['qty'] * $validated['harga']);
+
+            $transaksi = TransaksiKeluar::findOrFail($id);
+
+            // Update stok jika barang_kode atau qty berubah
+            if ($transaksi->barang_kode != $validated['barang_kode'] || $transaksi->qty != $validated['qty']) {
+                // Tambah stok lama kembali
+                Stok::where('barang_kode', $transaksi->barang_kode)
+                    ->increment('jumlah', $transaksi->qty);
+                // Kurangi stok baru
+                Stok::where('barang_kode', $validated['barang_kode'])
+                    ->decrement('jumlah', $validated['qty']);
+            }
+
+            $transaksi->update($validated);
+
+            DB::commit();
+            return redirect()->route('transaksi-keluar.index')->with('success', 'Transaksi keluar berhasil diupdate');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withInput()->with('error', 'Gagal update transaksi: ' . $e->getMessage());
+        }
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = TransaksiKeluar::findOrFail($id);
+        try {
+            DB::beginTransaction();
+            // Tambah stok kembali
+            Stok::where('barang_kode', $transaksi->barang_kode)
+                ->increment('jumlah', $transaksi->qty);
+            $transaksi->delete();
+            DB::commit();
+            return redirect()->route('transaksi-keluar.index')->with('success', 'Transaksi keluar berhasil dihapus');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Gagal hapus transaksi: ' . $e->getMessage());
+        }
+    }
     public function index()
     {
         $transaksi = TransaksiKeluar::with(['barang', 'tempat', 'tempat.tempatStatus'])

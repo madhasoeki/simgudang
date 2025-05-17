@@ -40,6 +40,7 @@
                             <th>Jumlah</th>
                             <th>Keterangan</th>
                             <th>Tempat</th>
+                            <th>Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -88,6 +89,7 @@
                     "lengthChange": false,
                     "autoWidth": false,
                     "ordering": false,
+                    "info": false,
                     "processing": true,
                     "serverSide": true,
                     "ajax": {
@@ -126,8 +128,26 @@
                             }
                         },
                         { "data": "keterangan" },
-                        { "data": "tempat" }
-                    ],
+                        { "data": "tempat" },
+                    
+                        {
+                            "data": null,
+                            "orderable": false,
+                            "searchable": false,
+                            "render": function(data, type, row) {
+                                let editUrl = `/transaksi-keluar/${row.id}/edit`;
+                                let deleteUrl = `/transaksi-keluar/${row.id}`;
+                                return `
+                                    <a href=\"${editUrl}\" class=\"btn btn-warning btn-sm\"><i class=\"fas fa-edit\"></i> Edit</a>
+                                    <form action=\"${deleteUrl}\" method=\"POST\" style=\"display:inline-block\" class=\"form-delete-transaksi-keluar\">
+                                        <input type=\"hidden\" name=\"_token\" value=\"${$('meta[name=csrf-token]').attr('content')}\">
+                                        <input type=\"hidden\" name=\"_method\" value=\"DELETE\">
+                                        <button type=\"button\" class=\"btn btn-danger btn-sm btn-delete-transaksi-keluar\"><i class=\"fas fa-trash\"></i> Hapus</button>
+                                    </form>
+                                `;
+                            }
+                        }
+                        ],
                     "buttons": [
                         {
                             extend: 'excel',
@@ -248,6 +268,25 @@
                 });
 
                 // Handle cancel date picker
+                // SweetAlert untuk hapus transaksi keluar
+                $('#tabel').on('click', '.btn-delete-transaksi-keluar', function(e) {
+                    e.preventDefault();
+                    const form = $(this).closest('form');
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus transaksi ini?',
+                        text: "Data yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
                 $('#dateFilterDropdown').on('cancel.daterangepicker', function(ev, picker) {
                     startDate = moment().subtract(6, 'days');
                     endDate = moment();

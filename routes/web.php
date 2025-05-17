@@ -46,6 +46,12 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/data', [TransaksiMasukController::class, 'data'])->name('data');
         Route::get('/create', [TransaksiMasukController::class, 'create'])->name('create');
         Route::post('/', [TransaksiMasukController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [TransaksiMasukController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TransaksiMasukController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TransaksiMasukController::class, 'destroy'])->name('destroy');
+        Route::get('/{id}/edit', [TransaksiMasukController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TransaksiMasukController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TransaksiMasukController::class, 'destroy'])->name('destroy');
     });
 
     // Transaksi keluar
@@ -54,6 +60,9 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/data', [TransaksiKeluarController::class, 'data'])->name('data');
         Route::get('/create', [TransaksiKeluarController::class, 'create'])->name('create');
         Route::post('/', [TransaksiKeluarController::class, 'store'])->name('store');
+        Route::get('/{id}/edit', [TransaksiKeluarController::class, 'edit'])->name('edit');
+        Route::put('/{id}', [TransaksiKeluarController::class, 'update'])->name('update');
+        Route::delete('/{id}', [TransaksiKeluarController::class, 'destroy'])->name('destroy');
         Route::get('/harga-barang', [TransaksiKeluarController::class, 'hargaBarang'])->name('harga-barang');
     });
 

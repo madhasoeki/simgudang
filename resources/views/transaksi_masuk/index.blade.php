@@ -38,6 +38,7 @@
                             <th>Satuan</th>
                             <th>Harga</th>
                             <th>Jumlah</th>
+                            <th>Aksi</th>
                         </tr>
                         </thead>
                         <tbody>
@@ -121,6 +122,23 @@
                             "data": "jumlah",
                             "render": function(data) {
                                 return 'Rp' + parseFloat(data).toLocaleString('id-ID');
+                            }
+                        },
+                        {
+                            "data": null,
+                            "orderable": false,
+                            "searchable": false,
+                            "render": function(data, type, row) {
+                                let editUrl = `/transaksi-masuk/${row.id}/edit`;
+                                let deleteUrl = `/transaksi-masuk/${row.id}`;
+                                return `
+                                    <a href=\"${editUrl}\" class=\"btn btn-warning btn-sm\"><i class=\"fas fa-edit\"></i> Edit</a>
+                                    <form action=\"${deleteUrl}\" method=\"POST\" style=\"display:inline-block\" class=\"form-delete-transaksi\">
+                                        <input type=\"hidden\" name=\"_token\" value=\"${$('meta[name=csrf-token]').attr('content')}\">
+                                        <input type=\"hidden\" name=\"_method\" value=\"DELETE\">
+                                        <button type=\"button\" class=\"btn btn-danger btn-sm btn-delete-transaksi\"><i class=\"fas fa-trash\"></i> Hapus</button>
+                                    </form>
+                                `;
                             }
                         }
                     ],
@@ -244,6 +262,25 @@
                 });
 
                 // Handle cancel date picker
+                // SweetAlert untuk hapus transaksi masuk
+                $('#tabel').on('click', '.btn-delete-transaksi', function(e) {
+                    e.preventDefault();
+                    const form = $(this).closest('form');
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus transaksi ini?',
+                        text: "Data yang dihapus tidak dapat dikembalikan!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit();
+                        }
+                    });
+                });
                 $('#dateFilterDropdown').on('cancel.daterangepicker', function(ev, picker) {
                     startDate = moment().subtract(6, 'days');
                     endDate = moment();
