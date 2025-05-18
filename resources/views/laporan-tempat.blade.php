@@ -107,6 +107,7 @@
                 ranges: {
                     'Periode Ini': [getCustomRange(moment()).start, getCustomRange(moment()).end],
                     'Periode Lalu': [getCustomRange(moment().subtract(1, 'month')).start, getCustomRange(moment().subtract(1, 'month')).end],
+                    'Maksimal': [moment('2025-01-01'), moment()]
                 }
             }, function(start, end) {
                 currentMonth = end.format('YYYY-MM');

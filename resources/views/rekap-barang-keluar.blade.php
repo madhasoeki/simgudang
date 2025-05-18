@@ -15,7 +15,7 @@
                         <div class="dropdown">
                             <button class="btn btn-default" id="monthPicker">
                                 <i class="far fa-calendar-alt mr-2"></i>
-                                <span>{{ date('F Y') }}</span> <!-- Default bulan saat ini -->
+                                <span></span> <!-- Akan diisi oleh JS -->
                             </button>
                         </div>
                     </div>
@@ -68,12 +68,15 @@
                 return `Rp${parseFloat(value).toLocaleString('id-ID')}`;
             };
 
+
             // Inisialisasi default periode 26-25
             let currentDate = moment();
             let { start: startDate, end: endDate } = getCustomRange(currentDate);
+            // Set label awal pada button datepicker
+            $('#monthPicker span').html(startDate.format('DD MMM YYYY') + ' - ' + endDate.format('DD MMM YYYY'));
 
-                // Konfigurasi DataTable
-                const table = $("#tabel").DataTable({
+            // Konfigurasi DataTable
+            const table = $("#tabel").DataTable({
                     "dom": 'Bfrtip', // Hilangkan 'l' (length menu) dan 'f' (search)
                     "lengthChange": false, // Sembunyikan "Show entries"
                     "searching": false, // Nonaktifkan search box
@@ -95,17 +98,20 @@
                             d.end_date = endDate.format('YYYY-MM-DD');
                         }
                     },
-                    "buttons": [
-                        {
-                            "extend": 'excel',
-                            "text": '<i class="fa-solid fa-download"></i> Export',
-                            "className": 'btn btn-success btn-sm',
-                            "exportOptions": {
-                                "columns": [0, 1, 2, 3]
-                            },
-                            "title": 'Laporan Barang Keluar'
+                "buttons": [
+                    {
+                        "extend": 'excel',
+                        "text": '<i class="fa-solid fa-download"></i> Export',
+                        "className": 'btn btn-success btn-sm',
+                        "exportOptions": {
+                            "columns": [0, 1, 2, 3]
+                        },
+                        "title": 'Laporan Barang Keluar',
+                        messageTop: function() {
+                            return `Periode: ${startDate.format('DD MMM YYYY')} - ${endDate.format('DD MMM YYYY')}`;
                         }
-                    ],
+                    }
+                ],
                     "columns": [
                         { 
                             "data": "DT_RowIndex",
@@ -164,47 +170,52 @@
                     }
                 });
 
-                // Konfigurasi Month Picker custom 26-25
-                $('#monthPicker').daterangepicker({
-                    startDate: startDate,
-                    endDate: endDate,
-                    autoUpdateInput: true,
-                    locale: {
-                        format: 'DD/MM/YYYY',
-                        separator: ' - ',
-                        applyLabel: 'Pilih',
-                        cancelLabel: 'Batal',
-                        daysOfWeek: ['Mg', 'Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb'],
-                        monthNames: [
-                            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                        ],
-                    },
-                    opens: 'left',
-                    showDropdowns: true,
-                    minYear: 2020,
-                    maxYear: parseInt(moment().format('YYYY'), 10),
-                    singleDatePicker: false,
-                    alwaysShowCalendars: true,
-                    ranges: {
-                        'Periode Ini': [getCustomRange(moment()).start, getCustomRange(moment()).end],
-                        'Periode Lalu': [getCustomRange(moment().subtract(1, 'month')).start, getCustomRange(moment().subtract(1, 'month')).end],
-                    }
-                }, function(start, end, label) {
-                    startDate = start;
-                    endDate = end;
-                    $('#monthPicker span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
-                    table.ajax.reload();
-                });
 
-                // Handle cancel
-                $('#monthPicker').on('cancel.daterangepicker', function(ev, picker) {
-                    const { start, end } = getCustomRange(moment());
-                    $(this).find('span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
-                    startDate = start;
-                    endDate = end;
-                    table.ajax.reload();
-                });
+            // Konfigurasi Month Picker custom 26-25
+            $('#monthPicker').daterangepicker({
+                startDate: startDate,
+                endDate: endDate,
+                autoUpdateInput: true,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    daysOfWeek: ['Mg', 'Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb'],
+                    monthNames: [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                },
+                opens: 'left',
+                showDropdowns: true,
+                minYear: 2020,
+                maxYear: parseInt(moment().format('YYYY'), 10),
+                singleDatePicker: false,
+                alwaysShowCalendars: true,
+                ranges: {
+                    'Periode Ini': [getCustomRange(moment()).start, getCustomRange(moment()).end],
+                    'Periode Lalu': [getCustomRange(moment().subtract(1, 'month')).start, getCustomRange(moment().subtract(1, 'month')).end],
+                    'Maksimal': [moment('2025-01-01'), moment()]
+                }
+            }, function(start, end, label) {
+                startDate = start;
+                endDate = end;
+                $('#monthPicker span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
+                table.ajax.reload();
+            });
+
+            // Set label awal juga jika reload/refresh
+            $('#monthPicker span').html(startDate.format('DD MMM YYYY') + ' - ' + endDate.format('DD MMM YYYY'));
+
+            // Handle cancel
+            $('#monthPicker').on('cancel.daterangepicker', function(ev, picker) {
+                const { start, end } = getCustomRange(moment());
+                $(this).find('span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
+                startDate = start;
+                endDate = end;
+                table.ajax.reload();
+            });
 
                 $('#tabel').on('click', '.btn-status', function() {
                     const button = $(this);

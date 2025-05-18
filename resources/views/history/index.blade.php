@@ -34,43 +34,8 @@
                                         <th>Data Sesudah</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    @foreach($histories as $history)
-                                        <tr>
-                                            <td>{{ $loop->iteration + ($histories->currentPage() - 1) * $histories->perPage() }}</td>
-                                            <td>{{ $history->created_at->setTimezone('Asia/Jakarta')->format('d-m-Y') }}</td>
-                                            <td>{{ $history->created_at->setTimezone('Asia/Jakarta')->format('H:i:s') }}</td>
-                                            <td>{{ $history->user ? $history->user->name : '-' }}</td>
-                                            <td>{{ $history->table_name }}</td>
-                                            <td>{{ $history->record_id }}</td>
-                                            <td>{{ $history->action }}</td>
-                                            <td>
-                                                @php $ov = $history->old_values ?? []; @endphp
-                                                @if(!empty($ov) && is_array($ov))
-                                                    @foreach($ov as $key => $val)
-                                                        <b>{{ ucfirst($key) }}</b>: {{ is_array($val) ? json_encode($val) : $val }}<br>
-                                                    @endforeach
-                                                @else
-                                                    <span>-</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                @php $nv = $history->new_values ?? []; @endphp
-                                                @if(!empty($nv) && is_array($nv))
-                                                    @foreach($nv as $key => $val)
-                                                        <b>{{ ucfirst($key) }}</b>: {{ is_array($val) ? json_encode($val) : $val }}<br>
-                                                    @endforeach
-                                                @else
-                                                    <span>-</span>
-                                                @endif
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
+                                <tbody></tbody>
                             </table>
-                            <div class="card-footer clearfix">
-                                {{ $histories->links() }}
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -88,57 +53,56 @@
         const isSuperAdmin = @json($isSuperAdmin);
           $(function () {
             // Inisialisasi datepicker
-            const initDatePicker = () => {
-                const defaultDate = moment().startOf('month');
-                const picker = $('#monthPickerOpname').daterangepicker({
-                    startDate: defaultDate,
-                    endDate: defaultDate.clone().endOf('month'),
-                    locale: {
-                        format: 'MM/YYYY',
-                        separator: ' - ',
-                        applyLabel: 'Pilih',
-                        cancelLabel: 'Batal',
-                        daysOfWeek: ['Mg', 'Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb'],
-                        monthNames: [
-                            'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
-                            'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
-                        ],
-                    },
-                    opens: 'left',
-                    showDropdowns: true,
-                    autoUpdateInput: true,
-                    alwaysShowCalendars: true,
-                    ranges: {
-                        'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-                        'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        '2 Bulan Lalu': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
-                        '3 Bulan Lalu': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
-                    }
-                }, function(start, end) {
-                    currentMonth = start.format('YYYY-MM');
-                    $('#monthPickerOpname span').html(start.format('MMMM YYYY')); // <-- Tambahan ini
-                    table.ajax.reload();
-                });
+
+            // Datepicker: default 7 hari terakhir
+            let startDate = moment().subtract(6, 'days');
+            let endDate = moment();
+            $('#monthPickerOpname').daterangepicker({
+                startDate: startDate,
+                endDate: endDate,
+                autoUpdateInput: true,
+                locale: {
+                    format: 'DD/MM/YYYY',
+                    separator: ' - ',
+                    applyLabel: 'Pilih',
+                    cancelLabel: 'Batal',
+                    daysOfWeek: ['Mg', 'Sn', 'Sl', 'Rb', 'Km', 'Jm', 'Sb'],
+                    monthNames: [
+                        'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
+                        'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
+                    ],
+                },
+                opens: 'left',
+                showDropdowns: true,
+                alwaysShowCalendars: true,
+                ranges: {
+                    'Hari Ini': [moment(), moment()],
+                    'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
+                    '14 Hari Terakhir': [moment().subtract(13, 'days'), moment()],
+                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                    'Maksimal': [moment('2025-01-01'), moment()]
+                }
+            }, function(start, end) {
+                startDate = start;
+                endDate = end;
+                $('#monthPickerOpname span').html(start.format('DD/MM/YYYY') + ' - ' + end.format('DD/MM/YYYY'));
+                table.ajax.reload();
+            });
+
+            // Set label awal
+            $('#monthPickerOpname span').html(startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY'));
   
-                // Handle initial render
-                const initialStart = picker.data('daterangepicker').startDate;
-                $('#monthPickerOpname span').html(initialStart.format('MMMM YYYY'));
-                
-                return picker;
-            };
-  
-            // Inisialisasi datepicker pertama kali
-            let currentMonth = moment().format('YYYY-MM');
-            const picker = initDatePicker();
-  
+
             // Inisialisasi DataTable
-            const table = $('#tabel-opname').DataTable({
+            const table = $('#tabel-history').DataTable({
                 processing: true,
                 serverSide: true,
                 ajax: {
-                    url: "{{ route('opname.data') }}",
+                    url: "{{ route('history.data') }}",
                     data: function(d) {
-                        d.month = currentMonth;
+                        d.start_date = startDate.format('YYYY-MM-DD');
+                        d.end_date = endDate.format('YYYY-MM-DD');
                     },
                     error: function(xhr) {
                         console.error(xhr.responseText);
@@ -146,78 +110,47 @@
                 },
                 columns: [
                     { data: 'DT_RowIndex', orderable: false },
-                    { data: 'barang_kode' },
-                    { data: 'barang.nama' },
-                    { data: 'stock_awal', className: 'text-right' },
-                    { data: 'total_masuk', className: 'text-right' },
-                    { data: 'total_keluar', className: 'text-right' },
-                    { data: 'stock_total', className: 'text-right' },
-                    { data: 'total_lapangan' },
-                    { 
-                        data: 'selisih',
-                        className: 'text-right',
-                        render: function(data) {
-                            const cls = data > 0 ? 'text-success' : 'text-danger';
-                            return `<span class="${cls}">${data}</span>`;
-                        }
-                    },
-                    { data: 'keterangan' },
-                    {
-                        data: 'id',
-                        className: 'text-center',
-                        render: function(data, type, row) {
-                            const inputFormUrl = "{{ route('opname.input-form', ':id') }}".replace(':id', data);
-                            let approveBtn = '';
-                            if (!row.approved && isSuperAdmin) {
-                                approveBtn = `
-                                    <button class="btn btn-sm btn-success btn-approve" 
-                                            data-id="${data}"
-                                            title="Approve">
-                                        <i class="fas fa-check"></i>
-                                    </button>
-                                `;
-                            } else if (row.approved) {
-                                approveBtn = '<span class="text-success"><i class="fas fa-check-circle"></i> Approved</span>';
-                            }
-                            return `
-                                <div class="btn-action-group">
-                                    ${!row.approved ? `
-                                    <a href="${inputFormUrl}" 
-                                    class="btn btn-sm btn-info" 
-                                    title="Input Data Lapangan">
-                                        <i class="fas fa-clipboard-check"></i> Input Lapangan
-                                    </a>
-                                    ` : ''}
-                                    ${approveBtn}
-                                </div>
-                            `;
-                        }
-                    }
+                    { data: 'tanggal' },
+                    { data: 'jam' },
+                    { data: 'user' },
+                    { data: 'table_name' },
+                    { data: 'record_id' },
+                    { data: 'action' },
+                    { data: 'old_values' },
+                    { data: 'new_values' }
                 ],
                 dom: '<"d-flex justify-content-between align-items-center"Bf>rtip',
                 buttons: [
                     {
                         extend: 'excel',
                         text: '<i class="fa-solid fa-download"></i> Export',
-                        className: 'btn btn-success btn-sm', // Ubah style tombol
-                        title: "REKAPAN STOCK OPNAME",
+                        className: 'btn btn-success btn-sm',
+                        title: "REKAPAN HISTORY",
                         messageTop: function() {
-                            // Ambil periode dari datepicker
-                            const startDate = $('#monthPickerOpname').data('daterangepicker').startDate.format('DD/MM/YYYY') ;
-                            const endDate = $('#monthPickerOpname').data('daterangepicker').endDate.format('DD/MM/YYYY') ;
+                            const startDate = $('#monthPickerOpname').data('daterangepicker').startDate.format('DD/MM/YYYY');
+                            const endDate = $('#monthPickerOpname').data('daterangepicker').endDate.format('DD/MM/YYYY');
                             return `Periode: ${startDate} - ${endDate}`;
                         },
                         exportOptions: {
-                            columns: ':not(:first-child)' // Kecualikan kolom pertama (Nomor)
+                            columns: ':not(:first-child)'
                         }
                     }
                 ],
                 ordering: false,
                 language: {
-                    emptyTable: "Belum ada data opname",
+                    emptyTable: "Belum ada data history",
                     zeroRecords: "Tidak ada data yang ditemukan",
                 },
                 info: false,
+            });
+
+            // Handle cancel
+            $('#monthPickerOpname').on('cancel.daterangepicker', function(ev, picker) {
+                startDate = moment().subtract(6, 'days');
+                endDate = moment();
+                $(this).find('span').html(startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY'));
+                table.ajax.reload();
+                picker.hide();
             });
 
             $('#tabel-opname').on('click', '.btn-approve', function() {

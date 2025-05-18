@@ -238,19 +238,19 @@
                 };
 
                 $('#dateFilterDropdown').daterangepicker({
-                    startDate: startDate,
-                    endDate: endDate,
+                    alwaysShowCalendars: true,
+                    startDate: moment().subtract(6, 'days'),
+                    endDate: moment(),
                     autoUpdateInput: true,
                     locale: locale,
+                    alwaysShowCalendars: true,
                     ranges: {
+                        'Hari Ini': [moment(), moment()],
                         'Kemarin': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
                         '7 Hari Terakhir': [moment().subtract(6, 'days'), moment()],
                         '14 Hari Terakhir': [moment().subtract(13, 'days'), moment()],
-                        '28 Hari Terakhir': [moment().subtract(27, 'days'), moment()],
-                        '30 Hari Terakhir': [moment().subtract(29, 'days'), moment()],
-                        'Minggu Ini': [moment().startOf('week'), moment().endOf('week')],
-                        'Minggu Lalu': [moment().subtract(1, 'week').startOf('week'), moment().subtract(1, 'week').endOf('week')],
-                        'Bulan Ini': [moment().startOf('month'), moment().endOf('month')]
+                        'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
+                        'Maksimal': [moment('2025-01-01'), moment()]
                     }
                 }, function(start, end) {
                     startDate = start;
@@ -284,7 +284,7 @@
                 $('#dateFilterDropdown').on('cancel.daterangepicker', function(ev, picker) {
                     startDate = moment().subtract(6, 'days');
                     endDate = moment();
-                    $(this).find('span').html('Pilih Rentang Tanggal');
+                    $(this).find('span').html(startDate.format('DD/MM/YYYY') + ' - ' + endDate.format('DD/MM/YYYY'));
                     table.ajax.reload();
                     picker.hide();
                 });

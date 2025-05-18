@@ -104,4 +104,5 @@ Route::middleware(['auth'])->group(function () {
     });
     // History log (super admin only)
     Route::middleware(['role:super-admin'])->get('/history', [\App\Http\Controllers\HistoryController::class, 'index'])->name('history.index');
+    Route::middleware(['role:super-admin'])->get('/history/data', [\App\Http\Controllers\HistoryController::class, 'data'])->name('history.data');
 });
