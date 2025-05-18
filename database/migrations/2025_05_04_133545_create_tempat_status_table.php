@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('tempat_status', function (Blueprint $table) {
             $table->id();
             $table->foreignId('tempat_id')->constrained('tempat');
-            $table->year('tahun');
-            $table->tinyInteger('bulan'); // 1-12
+            // Ganti tahun & bulan menjadi periode_awal & periode_akhir
+            $table->date('periode_awal');
+            $table->date('periode_akhir');
             $table->enum('status', ['loading', 'done'])->default('loading');
             $table->integer('total')->default(0);
             $table->timestamps();
-            $table->unique(['tempat_id', 'tahun', 'bulan']);
+            $table->unique(['tempat_id', 'periode_awal', 'periode_akhir']);
         });
     }
 

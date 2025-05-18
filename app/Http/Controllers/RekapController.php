@@ -17,18 +17,16 @@ class RekapController extends Controller
     }
     public function data(Request $request)
     {
+
         $query = TempatStatus::join('tempat', 'tempat_status.tempat_id', '=', 'tempat.id')
             ->select('tempat_status.*', 'tempat.nama');
 
-        // Filter berdasarkan bulan dan tahun
-        if ($request->has('start_date') && $request->start_date) {
-            $month = date('n', strtotime($request->start_date)); // Ambil bulan (1-12)
-            $year = date('Y', strtotime($request->start_date)); // Ambil tahun
-            
-            $query->where([
-                'tempat_status.bulan' => $month,
-                'tempat_status.tahun' => $year
-            ]);
+        // Filter berdasarkan periode_awal dan periode_akhir
+        if ($request->has('start_date') && $request->has('end_date') && $request->start_date && $request->end_date) {
+            $start = date('Y-m-d', strtotime($request->start_date));
+            $end = date('Y-m-d', strtotime($request->end_date));
+            $query->where('tempat_status.periode_awal', $start)
+                  ->where('tempat_status.periode_akhir', $end);
         }
 
         return DataTables::of($query)

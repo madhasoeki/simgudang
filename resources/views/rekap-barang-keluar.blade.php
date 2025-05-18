@@ -50,20 +50,27 @@
     </section>
 
     <x-slot:script>
+
         <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
         <script>
-            $(function () {
-                const formatRupiah = (value) => {
-                    return `Rp${parseFloat(value).toLocaleString('id-ID')}`;
-                };
+        $(function () {
+            // --- Tambahkan fungsi custom range 26-25 ---
+            function getCustomRange(date) {
+                let start = date.clone().subtract(1, 'month').date(26);
+                let end = date.clone().date(25);
+                return { start, end };
+            }
 
-                // Inisialisasi bulan saat ini
-                let currentDate = moment();
-                let startDate = currentDate.clone().startOf('month');
-                let endDate = currentDate.clone().endOf('month');
+            const formatRupiah = (value) => {
+                return `Rp${parseFloat(value).toLocaleString('id-ID')}`;
+            };
+
+            // Inisialisasi default periode 26-25
+            let currentDate = moment();
+            let { start: startDate, end: endDate } = getCustomRange(currentDate);
 
                 // Konfigurasi DataTable
                 const table = $("#tabel").DataTable({
@@ -85,6 +92,7 @@
                         "url": "/rekap-tempat/data",
                         "data": function(d) {
                             d.start_date = startDate.format('YYYY-MM-DD');
+                            d.end_date = endDate.format('YYYY-MM-DD');
                         }
                     },
                     "buttons": [
@@ -156,13 +164,13 @@
                     }
                 });
 
-                // Konfigurasi Month Picker
+                // Konfigurasi Month Picker custom 26-25
                 $('#monthPicker').daterangepicker({
                     startDate: startDate,
                     endDate: endDate,
                     autoUpdateInput: true,
                     locale: {
-                        format: 'MM/YYYY',
+                        format: 'DD/MM/YYYY',
                         separator: ' - ',
                         applyLabel: 'Pilih',
                         cancelLabel: 'Batal',
@@ -179,23 +187,22 @@
                     singleDatePicker: false,
                     alwaysShowCalendars: true,
                     ranges: {
-                        'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-                        'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                        '2 Bulan Lalu': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
-                        '3 Bulan Lalu': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
+                        'Periode Ini': [getCustomRange(moment()).start, getCustomRange(moment()).end],
+                        'Periode Lalu': [getCustomRange(moment().subtract(1, 'month')).start, getCustomRange(moment().subtract(1, 'month')).end],
                     }
                 }, function(start, end, label) {
                     startDate = start;
                     endDate = end;
-                    $('#monthPicker span').html(start.format('MMMM YYYY'));
+                    $('#monthPicker span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
                     table.ajax.reload();
                 });
 
                 // Handle cancel
                 $('#monthPicker').on('cancel.daterangepicker', function(ev, picker) {
-                    $(this).find('span').html(moment().format('MMMM YYYY'));
-                    startDate = moment().startOf('month');
-                    endDate = moment().endOf('month');
+                    const { start, end } = getCustomRange(moment());
+                    $(this).find('span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
+                    startDate = start;
+                    endDate = end;
                     table.ajax.reload();
                 });
 

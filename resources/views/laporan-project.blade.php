@@ -78,12 +78,19 @@
       $(function () {
           // Inisialisasi datepicker
           const initDatePicker = () => {
-              const defaultDate = moment().startOf('month');
+              // Custom range 26 bulan lalu - 25 bulan berjalan
+              const getCustomRange = (date) => {
+                  let start = date.clone().subtract(1, 'month').date(26);
+                  let end = date.clone().date(25);
+                  return { start, end };
+              };
+              const defaultDate = moment();
+              const { start, end } = getCustomRange(defaultDate);
               const picker = $('#monthPicker').daterangepicker({
-                startDate: defaultDate,
-                endDate: defaultDate.clone().endOf('month'),
+                startDate: start,
+                endDate: end,
                 locale: {
-                    format: 'MM/YYYY',
+                    format: 'DD/MM/YYYY',
                     separator: ' - ',
                     applyLabel: 'Pilih',
                     cancelLabel: 'Batal',
@@ -98,23 +105,19 @@
                 autoUpdateInput: true,
                 alwaysShowCalendars: true,
                 ranges: {
-                    'Bulan Ini': [moment().startOf('month'), moment().endOf('month')],
-                    'Bulan Lalu': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    '2 Bulan Lalu': [moment().subtract(2, 'month').startOf('month'), moment().subtract(2, 'month').endOf('month')],
-                    '3 Bulan Lalu': [moment().subtract(3, 'month').startOf('month'), moment().subtract(3, 'month').endOf('month')],
+                    'Periode Ini': [getCustomRange(moment()).start, getCustomRange(moment()).end],
+                    'Periode Lalu': [getCustomRange(moment().subtract(1, 'month')).start, getCustomRange(moment().subtract(1, 'month')).end],
                 }
             }, function(start, end) {
-                currentMonth = start.format('YYYY-MM');
-                $('#monthPicker span').html(start.format('MMMM YYYY'));
+                currentMonth = end.format('YYYY-MM');
+                $('#monthPicker span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
                 if ($('#tempatFilter').val()) {
                     table.ajax.reload();
                 }
             });
 
               // Handle initial render
-              const initialStart = picker.data('daterangepicker').startDate;
-              $('#monthPicker span').html(initialStart.format('MMMM YYYY'));
-              
+              $('#monthPicker span').html(start.format('DD MMM YYYY') + ' - ' + end.format('DD MMM YYYY'));
               return picker;
           };
 

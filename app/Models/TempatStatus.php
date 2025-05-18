@@ -7,12 +7,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TempatStatus extends Model
 {
+
     protected $table = 'tempat_status';
     protected $fillable = [
-        'tempat_id', 
-        'tahun', 
-        'bulan', 
-        'status', 
+        'tempat_id',
+        'periode_awal',
+        'periode_akhir',
+        'status',
         'total'
     ];
 
@@ -20,5 +21,11 @@ class TempatStatus extends Model
     public function tempat()
     {
         return $this->belongsTo(Tempat::class, 'tempat_id');
+    }
+
+    // Scope untuk filter berdasarkan periode
+    public function scopeInPeriode($query, $start, $end)
+    {
+        return $query->where('periode_awal', $start)->where('periode_akhir', $end);
     }
 }

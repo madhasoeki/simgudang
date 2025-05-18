@@ -15,8 +15,9 @@ class GenerateOpname extends Command
     public function handle()
     {
         $month = $this->argument('month') ?? now()->format('Y-m');
-        $start = Carbon::parse($month)->startOfMonth();
-        $end = Carbon::parse($month)->endOfMonth();
+        // Periode custom: 26 bulan sebelumnya s/d 25 bulan berjalan
+        $start = Carbon::parse($month)->subMonth()->day(26);
+        $end = Carbon::parse($month)->day(25);
 
         $barangs = Barang::all();
 

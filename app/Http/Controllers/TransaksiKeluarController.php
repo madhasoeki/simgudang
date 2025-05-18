@@ -164,12 +164,15 @@ class TransaksiKeluarController extends Controller
             Stok::where('barang_kode', $validated['barang_kode'])
                 ->decrement('jumlah', $validated['qty']);
 
-            // Update tempat status bulanan
+            // Update tempat status periode 26-25
+            $tanggal = Carbon::parse($validated['tanggal']);
+            $periode_awal = $tanggal->copy()->subMonth()->day(26)->format('Y-m-d');
+            $periode_akhir = $tanggal->copy()->day(25)->format('Y-m-d');
             TempatStatus::updateOrCreate(
                 [
                     'tempat_id' => $validated['tempat_id'],
-                    'tahun' => date('Y', strtotime($validated['tanggal'])),
-                    'bulan' => date('n', strtotime($validated['tanggal']))
+                    'periode_awal' => $periode_awal,
+                    'periode_akhir' => $periode_akhir
                 ],
                 [
                     'total' => DB::raw("total + {$validated['jumlah']}"),
@@ -195,9 +198,10 @@ class TransaksiKeluarController extends Controller
         }
     
         $month = $request->month ?? now()->format('Y-m');
-        $start = Carbon::parse($month)->startOfMonth();
-        $end = Carbon::parse($month)->endOfMonth();
-    
+        // Periode custom: 26 bulan sebelumnya s/d 25 bulan berjalan
+        $start = Carbon::parse($month)->subMonth()->day(26);
+        $end = Carbon::parse($month)->day(25);
+
         // Query dengan filter tempat_id DAN date range
         $query = TransaksiKeluar::with(['barang', 'tempat'])
             ->where('tempat_id', $request->tempat_id)

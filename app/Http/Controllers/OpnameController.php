@@ -37,14 +37,14 @@ class OpnameController extends Controller
     public function data(Request $request)
     {
         $month = $request->month ?? date('Y-m');
-        $year = date('Y', strtotime($month));
-        $monthNumber = date('m', strtotime($month));
+        // Periode custom: 26 bulan sebelumnya s/d 25 bulan berjalan
+        $start = Carbon::parse($month)->subMonth()->day(26);
+        $end = Carbon::parse($month)->day(25);
 
         $query = Opname::with(['barang' => function($q) {
             $q->withTrashed();
         }])
-            ->whereYear('periode_awal', $year)
-            ->whereMonth('periode_awal', $monthNumber)
+            ->whereBetween('periode_awal', [$start, $end])
             ->select('opname.*');
 
         return DataTables::of($query)
@@ -141,8 +141,9 @@ class OpnameController extends Controller
     public function dataMiss(Request $request)
     {
         $month = $request->month ?? now()->format('Y-m');
-        $start = Carbon::parse($month)->startOfMonth();
-        $end = Carbon::parse($month)->endOfMonth();
+        // Periode custom: 26 bulan sebelumnya s/d 25 bulan berjalan
+        $start = Carbon::parse($month)->subMonth()->day(26);
+        $end = Carbon::parse($month)->day(25);
 
         $query = Opname::with(['barang' => function($q) {
             $q->withTrashed();
