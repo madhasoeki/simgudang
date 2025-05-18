@@ -47,28 +47,101 @@ class HistoryController extends Controller
                 return $row->user ? $row->user->name : '-';
             })
             ->editColumn('old_values', function($row) {
-                $ov = $row->old_values ?? [];
-                if (!empty($ov) && is_array($ov)) {
-                    $str = '';
-                    foreach ($ov as $key => $val) {
-                        $str .= '<b>' . ucfirst($key) . '</b>: ' . (is_array($val) ? json_encode($val) : $val) . '<br>';
-                    }
-                    return $str;
-                }
-                return '-';
+                return $this->formatHistoryValues($row->table_name, $row->old_values);
             })
             ->editColumn('new_values', function($row) {
-                $nv = $row->new_values ?? [];
-                if (!empty($nv) && is_array($nv)) {
-                    $str = '';
-                    foreach ($nv as $key => $val) {
-                        $str .= '<b>' . ucfirst($key) . '</b>: ' . (is_array($val) ? json_encode($val) : $val) . '<br>';
-                    }
-                    return $str;
-                }
-                return '-';
+                return $this->formatHistoryValues($row->table_name, $row->new_values);
             })
             ->rawColumns(['old_values', 'new_values'])
             ->make(true);
+
+    }
+
+    /**
+     * Format history values for display in the table.
+     */
+    private function formatHistoryValues($table, $values)
+    {
+        if (empty($values) || !is_array($values)) return '-';
+
+        // Remove unwanted fields
+        unset($values['created_at'], $values['updated_at'], $values['id']);
+
+        $result = [];
+        switch ($table) {
+            case 'barang':
+                $fields = ['kode', 'nama', 'satuan'];
+                foreach ($fields as $f) {
+                    if (isset($values[$f])) $result[$f] = $values[$f];
+                }
+                break;
+            case 'tempat':
+                if (isset($values['nama'])) $result['nama'] = $values['nama'];
+                break;
+            case 'transaksi_masuk':
+                $result['barang_kode'] = $values['barang_kode'] ?? '';
+                $result['barang_nama'] = $values['barang_nama'] ?? ($values['nama'] ?? '');
+                $result['qty'] = $values['qty'] ?? '';
+                $result['harga'] = $this->formatRupiah($values['harga'] ?? '');
+                $jumlah = $values['jumlah'] ?? ((isset($values['qty'], $values['harga'])) ? $values['qty'] * $values['harga'] : '');
+                $result['jumlah'] = $this->formatRupiah($jumlah);
+                break;
+            case 'transaksi_keluar':
+                $result['barang_kode'] = $values['barang_kode'] ?? '';
+                $result['barang_nama'] = $values['barang_nama'] ?? ($values['nama'] ?? '');
+                $result['qty'] = $values['qty'] ?? '';
+                $result['harga'] = $this->formatRupiah($values['harga'] ?? '');
+                $jumlah = $values['jumlah'] ?? ((isset($values['qty'], $values['harga'])) ? $values['qty'] * $values['harga'] : '');
+                $result['jumlah'] = $this->formatRupiah($jumlah);
+                $result['keterangan'] = $values['keterangan'] ?? '';
+                $result['tempat_nama'] = $values['tempat_nama'] ?? ($values['tempat']['nama'] ?? '');
+                break;
+            case 'opname':
+                // Format periode: 26 Apr 2025 - 25 May 2025
+                if (isset($values['periode_awal'], $values['periode_akhir'])) {
+                    $result['periode'] = $this->formatPeriode($values['periode_awal'], $values['periode_akhir']);
+                } else {
+                    $result['periode'] = '';
+                }
+                $result['barang_kode'] = $values['barang_kode'] ?? '';
+                $result['barang_nama'] = $values['barang_nama'] ?? ($values['nama'] ?? '');
+                $result['total_lapangan'] = $values['total_lapangan'] ?? '';
+                $result['keterangan'] = $values['keterangan'] ?? '';
+                break;
+            default:
+                $result = $values;
+        }
+        if (empty($result)) return '-';
+        $str = '';
+        foreach ($result as $key => $val) {
+            $str .= '<b>' . ucfirst(str_replace('_', ' ', $key)) . '</b>: ' . (is_array($val) ? json_encode($val) : $val) . '<br>';
+        }
+        return $str;
+    }
+
+    /**
+     * Format number to Rupiah (Rp50.000)
+     */
+    private function formatRupiah($value)
+    {
+        if ($value === '' || $value === null) return '';
+        $number = is_numeric($value) ? $value : floatval(preg_replace('/[^\d.]/', '', $value));
+        return 'Rp' . number_format($number, 0, ',', '.');
+    }
+
+    /**
+     * Format periode to "26 Apr 2025 - 25 May 2025"
+     */
+    private function formatPeriode($awal, $akhir)
+    {
+        try {
+            $start = \Carbon\Carbon::parse($awal);
+            $end = \Carbon\Carbon::parse($akhir);
+            $startStr = $start->format('d M Y');
+            $endStr = $end->format('d M Y');
+            return $startStr . ' - ' . $endStr;
+        } catch (\Exception $e) {
+            return $awal . ' - ' . $akhir;
+        }
     }
 }
