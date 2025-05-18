@@ -14,6 +14,7 @@
                                     <input type="text" class="form-control" id="nama" name="nama" value="{{ old('nama', $tempat->nama) }}" required>
                                 </div>
                                 <button type="submit" class="btn btn-primary">Simpan</button>
+                                <a href="{{ route('tempat.index') }}" class="btn btn-secondary">Batal</a>
                             </form>
                         </div>
                     </div>

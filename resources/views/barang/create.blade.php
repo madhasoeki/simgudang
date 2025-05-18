@@ -27,7 +27,7 @@
     
             <div class="mb-3">
                 <label for="satuan" class="form-label">Satuan</label>
-                <select class="form-select @error('satuan') is-invalid @enderror" 
+                <select class="form-control @error('satuan') is-invalid @enderror" 
                         id="satuan" name="satuan" required>
                     <option value="">Pilih Satuan</option>
                     <option value="SAK">SAK</option>
