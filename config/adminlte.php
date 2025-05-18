@@ -64,11 +64,11 @@ return [
     */
 
     'logo' => '<b>SIM</b>GUDANG',
-    'logo_img' => 'img/logo-putih.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo_img' => 'img/logo.png',
+    'logo_img_class' => 'brand-image',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Logo SIDAQ Putih',
+    'logo_img_alt' => 'Logo Masjid Ismuhu Yahya',
 
     /*
     |--------------------------------------------------------------------------
@@ -171,12 +171,12 @@ return [
     |
     */
 
-    'classes_auth_card' => 'card-outline card-success',
+    'classes_auth_card' => 'card-outline card-warning',
     'classes_auth_header' => '',
     'classes_auth_body' => '',
     'classes_auth_footer' => '',
     'classes_auth_icon' => '',
-    'classes_auth_btn' => 'btn-flat btn-success',
+    'classes_auth_btn' => 'btn-flat btn-warning',
 
     /*
     |--------------------------------------------------------------------------
@@ -196,7 +196,7 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
+    'classes_sidebar' => 'sidebar-light-warning elevation-4',
     'classes_sidebar_nav' => '',
     'classes_topnav' => 'navbar-white navbar-light',
     'classes_topnav_nav' => 'navbar-expand',
