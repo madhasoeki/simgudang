@@ -36,6 +36,9 @@ class DashboardController extends Controller
             'tempat' => function($q) { $q->withTrashed(); }
         ])->whereDate('tanggal', today())->get();
 
+        // Data stok barang untuk dashboard (tampilkan semua barang beserta stok)
+        $barangs = Barang::with('stok')->orderBy('kode', 'asc')->get();
+
         // Load quotes from JSON file
         $quotes = json_decode(file_get_contents(resource_path('quotes.json')), true);
 
@@ -50,6 +53,7 @@ class DashboardController extends Controller
             'stokMenipis' => $stokMenipis,
             'transaksiMasukHariIni' => $transaksiMasukHariIni,
             'transaksiKeluarHariIni' => $transaksiKeluarHariIni,
+            'barangs' => $barangs,
             'quoteText' => $selectedQuote['text'],
             'quoteSource' => $selectedQuote['source'],
         ]);

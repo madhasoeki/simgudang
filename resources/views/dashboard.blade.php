@@ -3,6 +3,15 @@
 
   <x-slot:title>{{ $title }}</x-slot:title>
   <x-slot:style>
+    <style>
+        .sticky-th {
+            position: sticky;
+            top: 0;
+            background: #fff; /* atau warna latar belakang tabel */
+            z-index: 2;
+        }
+    </style>
+  </x-slot:style>
 
   
   <div class="row">
@@ -32,6 +41,41 @@
                 <span class="info-box-number">{{ $stokMenipis->count() }}</span>
             </div>
         </div>
+    </div>
+  </div>
+
+  <!-- Tabel Stok Barang Scrollable -->
+  <div class="row mt-4">
+    <div class="col-12">
+      <div class="card card-outline card-primary">
+        <div class="card-header">
+          <h3 class="card-title">Stok Barang</h3>
+        </div>
+        <div class="card-body">
+          <div style="max-height: 300px; overflow-y: auto;">
+            <table class="table table-bordered table-striped mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 3%" class="sticky-th">No</th>
+                  <th class="sticky-th">Kode</th>
+                  <th class="sticky-th">Nama Barang</th>
+                  <th class="sticky-th">Stok</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach($barangs as $index => $barang)
+                  <tr>
+                    <td>{{ $index + 1 }}</td>
+                    <td>{{ $barang->kode }}</td>
+                    <td>{{ $barang->nama }}</td>
+                    <td>{{ $barang->stok->jumlah ?? 0 }}</td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -99,7 +143,7 @@
                               <td>{{ $transaksi->barang->nama ?? '-' }}</td>
                               <td>{{ $transaksi->qty }}</td>
                               <td>{{ number_format($transaksi->harga, 2, ',', '.') }}</td>
-                              <td>{{ $transaksi->projek->nama ?? '-' }}</td>
+                              <td>{{ $transaksi->tempat->nama ?? '-' }}</td>
                           </tr>
                           @empty
                           <tr>
@@ -112,6 +156,9 @@
           </div>
       </div>
   </div>
+
+  <footer class="text-center mt-4" style="max-width: 50%; margin: 0 auto; word-wrap: break-word; white-space: normal;">
+
 
   <footer class="text-center mt-4" style="max-width: 50%; margin: 0 auto; word-wrap: break-word; white-space: normal;">
       <p class="text-muted">{{ $quoteText }}</p>
